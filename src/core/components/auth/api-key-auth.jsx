@@ -21,6 +21,14 @@ export default class ApiKeyAuth extends React.Component {
       schema: schema,
       value: value
     }
+
+    //console.log(this.props)
+    if(this.props.token){
+      let { onChange } = this.props
+      let newState = Object.assign({}, this.state, { value: this.props.token })
+      this.setState(newState)
+      onChange(newState);
+    }
   }
 
   getValue () {
@@ -66,10 +74,10 @@ export default class ApiKeyAuth extends React.Component {
           <p>In: <code>{ schema.get("in") }</code></p>
         </Row>
         <Row>
-          <label>Value:</label>
+          <label>Token:</label>
           {
             value ? <code> ****** </code>
-                  : <Col><Input type="text" onChange={ this.onChange } autoFocus/></Col>
+                  : <span>Unavailable</span>
           }
         </Row>
         {

@@ -11,50 +11,25 @@ export default class NewAuthorizationPopup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      client_id: '',
-      client_secret: '',
-      access_token: ''
+      id: '',
+      password: '',
+      token: '',
+      Bearer: {}
     };
-    this.login = this.login.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
-  login(e) {
-    e.preventDefault()
-
-    var details = {
-      'grant_type':'client_credentials',
-      'scope':'openid system/*.read',
-      'client_id':this.state.client_id,
-      'client_secret':this.state.client_secret
-    };
-
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    fetch("http://localhost:8080/minerva/fhir/oauth2/token", {
+  loginHandler = () => {
+    return fetch("https://webqa1.mphrx.com/minerva/api/login", {
       "method": "POST",
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+      "headers": {
+        "api-info": "V2|appVerson|deviceBrand|deviceModel|deviceScreenResolution|deviceOs|deviceOsVersion|deviceNetworkProvider|deviceNetworkType"
       },
-      body: formBody
-    })
-      .then(response => response.json())
-      .then(response => {
-        this.setState({
-          access_token: response.access_token
-        })
-        //this.state.token = response.token
-        console.log(this.state.access_token)
+      "body": JSON.stringify({
+        username: this.state.id,
+        password: this.state.password
       })
-      .catch(err => {
-        console.log(err);
-      });
+    })
   }
 
   handleChange(changeObject) {
@@ -65,36 +40,6 @@ export default class NewAuthorizationPopup extends React.Component {
     let { authSelectors, authActions, getComponent, errSelectors, specSelectors, fn: { AST = {} } } = this.props
     let definitions = authSelectors.shownDefinitions()
     const Auths = getComponent("auths")
-    // if(this.state.token){
-    //   return(
-    //     <div className="wrapper">
-    //       <label>token </label>
-    //       <input name="token" id="token" type="text" value={this.state.token} onChange={(e) => this.handleChange({ token: e.target.value })}/>
-    //     </div>
-    //   )
-    // }
-    // if(this.state.token){
-    //   console.log(this.state.token)
-    //   return <Auths token={this.state.token}
-    //                 AST={AST}
-    //                 definitions={ definitions }
-    //                 getComponent={ getComponent }
-    //                 errSelectors={ errSelectors }
-    //                 authSelectors={ authSelectors }
-    //                 authActions={ authActions }
-    //                 specSelectors={ specSelectors }/>
-    //   definitions.valueSeq().map(( definition, key ) => {
-    //     return <Auths token={this.state.token}
-    //                   key={ key }
-    //                   AST={AST}
-    //                   definitions={ definition }
-    //                   getComponent={ getComponent }
-    //                   errSelectors={ errSelectors }
-    //                   authSelectors={ authSelectors }
-    //                   authActions={ authActions }
-    //                   specSelectors={ specSelectors }/>
-    //   })
-    // }
 
     return (
       <div className="dialog-ux">
@@ -113,28 +58,22 @@ export default class NewAuthorizationPopup extends React.Component {
               <div className="modal-ux-content">
 
                 <div className="wrapper">
-                  <label>Client ID </label>
-                  <input name="client_id" id="client_id" type="text" value={this.state.client_id} onChange={(e) => this.handleChange({ client_id: e.target.value })}/>
+                  <label>ID </label>
+                  <input name="id" id="id" type="text" value={this.state.id} onChange={(e) => this.handleChange({ id: e.target.value })}/>
                 </div>
                 <div className="wrapper">
-                  <label>Client Secret </label>
-                  <input name="client_secret" id="client_secret" type="text" value={this.state.client_secret} onChange={(e) => this.handleChange({ client_secret: e.target.value })}/>
+                  <label>Password </label>
+                  <input name="password" id="password" type="password" value={this.state.password} onChange={(e) => this.handleChange({ password: e.target.value })}/>
                 </div>
 
-                <button type="submit" className="btn modal-btn auth authorize button" onClick={(e) => this.login(e)}>Authorize</button>
-                <button type="button" className="btn modal-btn auth btn-done button" onClick={ this.close }>Close</button>
-
-                <div className="wrapper">
-                  <label>access_token </label>
-                  <input name="access_token" id="access_token" type="text" value={this.state.access_token} onChange={(e) => this.handleChange({ access_token: e.target.value })}/>
-                </div>
 
                 {
                   definitions.valueSeq().map(( definition, key ) => {
-                    return <Auths token={this.state.access_token}
+                    return <Auths token={this.state.token}
                                   key={ key }
                                   AST={AST}
                                   definitions={ definition }
+                                  loginHandler={ this.loginHandler }
                                   getComponent={ getComponent }
                                   errSelectors={ errSelectors }
                                   authSelectors={ authSelectors }
