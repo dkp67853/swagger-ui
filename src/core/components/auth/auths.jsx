@@ -14,20 +14,59 @@ export default class Auths extends React.Component {
   constructor(props, context) {
     super(props, context)
 
-    this.state = {}
+    this.state = {
+      access_token: null,
+      name: null,
+      schema: null,
+      value: null
+    }
   }
+
+  internalSchema = null
+  internalName = null
 
   onAuthChange =(auth) => {
     let { name } = auth
 
     this.setState({ [name]: auth })
+
+    let { authActions } = this.props
+    this.state.Bearer.value = this.state.access_token
+    authActions.authorizeWithPersistOption(this.state)
   }
 
   submitAuth =(e) => {
     e.preventDefault()
 
-    let { authActions } = this.props
-    authActions.authorizeWithPersistOption(this.state)
+    let {loginHandler} = this.props
+
+    this.setState({
+      schema: this.internalSchema,
+      name: this.internalName
+      }
+    )
+    //console.log(loginHandler())
+    //console.log(loginHandler)
+
+    //console.log(this.internalSchema + this.internalName)
+    this.props.loginHandler().then(response => response.json())
+      .then(
+        response => {
+          this.setState({
+            access_token: response.access_token
+          })
+          //console.log("previous state" + this.state)
+          let newState = Object.assign({}, this.state, { value: response.access_token })
+          this.setState(newState)
+          //console.log(newState)
+          this.onAuthChange(newState);
+        }
+      )
+      .catch(err => {
+        console.log(err);
+      });
+
+
   }
 
   logoutClick =(e) => {
@@ -74,8 +113,12 @@ export default class Auths extends React.Component {
           !!nonOauthDefinitions.size && <form onSubmit={ this.submitAuth }>
             {
               nonOauthDefinitions.map( (schema, name) => {
+                this.internalName = name
+                this.internalSchema = schema
+
                 return <AuthItem
                   key={name}
+                  token={this.state.access_token}
                   schema={schema}
                   name={name}
                   getComponent={getComponent}
