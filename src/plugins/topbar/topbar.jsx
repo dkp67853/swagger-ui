@@ -146,12 +146,30 @@ export default class Topbar extends React.Component {
         <>
         <label className="select-label" htmlFor="select"><span>Select a definition</span></label>
         <select id="select" disabled={isLoading} onChange={ this.onUrlSelect }>
-          <option value="./examples/patient.json">Select</option>
-          <option value="./examples/patient.json">Patient</option>
-          <option value="./examples/practitioner.json">Practitioner</option>
-          <option value="./examples/encounter.json">Encounter</option>
+          <option value="./examples/Patient.json">Patient</option>
+          <option value="./examples/Practitioner.json">Practitioner</option>
+          <option value="./examples/Encounter.json">Encounter</option>
           <option value="./examples/observation.json">Observation</option>
-          <option value="./examples/diagnosticReport.json">Diagnostic Report</option>
+          <option value="./examples/DiagnosticReport.json">Diagnostic Report</option>
+          <option value="./examples/Account.json">Account</option>
+          <option value="./examples/CareTeam.json">Care Team</option>
+          <option value="./examples/ClinicalImpression.json">Clinical Impression</option>
+          <option value="./examples/Condition.json">Condition</option>
+          <option value="./examples/Coverage.json">Coverage</option>
+          <option value="./examples/Device.json">Device</option>
+          <option value="./examples/DiagnosticOrder.json">Diagnostic Order</option>
+          <option value="./examples/DocumentReference.json">Document Reference</option>
+          <option value="./examples/FamilyMemberHistory.json">Family Member History</option>
+          <option value="./examples/Goal.json">Goal</option>
+          <option value="./examples/Immunization.json">Immunization</option>
+          <option value="./examples/Location.json">Location</option>
+          <option value="./examples/Medication.json">Medication</option>
+          <option value="./examples/Organization.json">Organization</option>
+          <option value="./examples/PractitionerRole.json">Practitioner Role</option>
+          <option value="./examples/Procedure.json">Procedure</option>
+          <option value="./examples/Provenance.json">Provenance</option>
+          <option value="./examples/ServiceRequest.json">Service Request</option>
+          <option value="./examples/Task.json">Task</option>
         </select>
         </>
 

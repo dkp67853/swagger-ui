@@ -5,7 +5,7 @@ window.onload = function() {
   // Build a system
   const ui = SwaggerUIBundle({
     // url: "https://petstore.swagger.io/v2/swagger.json",
-    url: "./examples/patient.json",
+    url: "./examples/Patient.json",
     // url: "./examples/swos-281-oas2.yaml",
     dom_id: "#swagger-ui",
     presets: [
