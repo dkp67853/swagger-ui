@@ -1,11 +1,11 @@
 {
   "swagger": "2.0",
   "definitions": {
-    "Medication": {
-      "description": "This resource is primarily used for the identification and definition of a medication for the purposes of prescribing, dispensing, and administering a medication as well as for making statements about medication use.",
+    "MedicationRequest": {
+      "description": "An order or request for both supply of the medication and the instructions for administration of the medication to a patient. The resource is called \"MedicationRequest\" rather than \"MedicationPrescription\" or \"MedicationOrder\" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns.",
       "properties": {
         "resourceType": {
-          "description": "This is a Medication resource",
+          "description": "This is a MedicationRequest resource",
           "type": "string"
         },
         "id": {
@@ -29,46 +29,184 @@
           "$ref": "#/definitions/Narrative"
         },
         "identifier": {
-          "description": "Business identifier for this medication.",
+          "description": "Identifiers associated with this medication request that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropriate. They are business identifiers assigned to this resource by the performer or other systems and remain constant as the resource is updated and propagates from server to server.",
           "items": {
             "$ref": "#/definitions/Identifier"
           },
           "type": "array"
         },
-        "code": {
-          "description": "A code (or set of codes) that specify this medication, or a textual description if no code is available. Usage note: This could be a standard medication code such as a code from RxNorm, SNOMED CT, IDMP etc. It could also be a national or local formulary code, optionally with translations to other code systems.",
-          "$ref": "#/definitions/CodeableConcept"
-        },
         "status": {
-          "description": "A code to indicate if the medication is in active use.",
+          "description": "A code specifying the current state of the order.  Generally, this will be active or completed state.",
           "$ref": "#/definitions/code"
         },
-        "manufacturer": {
-          "description": "Describes the details of the manufacturer of the medication product.  This is not intended to represent the distributor of a medication product.",
-          "$ref": "#/definitions/Reference"
-        },
-        "form": {
-          "description": "Describes the form of the item.  Powder; tablets; capsule.",
+        "statusReason": {
+          "description": "Captures the reason for the current state of the MedicationRequest.",
           "$ref": "#/definitions/CodeableConcept"
         },
-        "amount": {
-          "description": "Specific amount of the drug in the packaged product.  For example, when specifying a product that has the same strength (For example, Insulin glargine 100 unit per mL solution for injection), this attribute provides additional clarification of the package amount (For example, 3 mL, 10mL, etc.).",
-          "$ref": "#/definitions/Ratio"
+        "intent": {
+          "description": "Whether the request is a proposal, plan, or an original order.",
+          "$ref": "#/definitions/code"
         },
-        "ingredient": {
-          "description": "Identifies a particular constituent of interest in the product.",
+        "category": {
+          "description": "Indicates the type of medication request (for example, where the medication is expected to be consumed or administered (i.e. inpatient or outpatient)).",
           "items": {
-            "$ref": "#/definitions/Medication_Ingredient"
+            "$ref": "#/definitions/CodeableConcept"
           },
           "type": "array"
         },
-        "batch": {
-          "description": "Information that only applies to packages (not products).",
-          "$ref": "#/definitions/Medication_Batch"
+        "priority": {
+          "description": "Indicates how quickly the Medication Request should be addressed with respect to other requests.",
+          "$ref": "#/definitions/code"
+        },
+        "doNotPerform": {
+          "description": "If true indicates that the provider is asking for the medication request not to occur.",
+          "$ref": "#/definitions/boolean"
+        },
+        "reportedBoolean": {
+          "description": "Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.",
+          "type": "boolean"
+        },
+        "reportedReference": {
+          "description": "Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.",
+          "$ref": "#/definitions/Reference"
+        },
+        "medicationCodeableConcept": {
+          "description": "Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "medicationReference": {
+          "description": "Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications.",
+          "$ref": "#/definitions/Reference"
+        },
+        "subject": {
+          "description": "A link to a resource representing the person or set of individuals to whom the medication will be given.",
+          "$ref": "#/definitions/Reference"
+        },
+        "encounter": {
+          "description": "The Encounter during which this [x] was created or to which the creation of this record is tightly associated.",
+          "$ref": "#/definitions/Reference"
+        },
+        "supportingInformation": {
+          "description": "Include additional information (for example, patient height and weight) that supports the ordering of the medication.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "authoredOn": {
+          "description": "The date (and perhaps time) when the prescription was initially written or authored on.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "requester": {
+          "description": "The individual, organization, or device that initiated the request and has responsibility for its activation.",
+          "$ref": "#/definitions/Reference"
+        },
+        "performer": {
+          "description": "The specified desired performer of the medication treatment (e.g. the performer of the medication administration).",
+          "$ref": "#/definitions/Reference"
+        },
+        "performerType": {
+          "description": "Indicates the type of performer of the administration of the medication.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "recorder": {
+          "description": "The person who entered the order on behalf of another individual for example in the case of a verbal or a telephone order.",
+          "$ref": "#/definitions/Reference"
+        },
+        "reasonCode": {
+          "description": "The reason or the indication for ordering or not ordering the medication.",
+          "items": {
+            "$ref": "#/definitions/CodeableConcept"
+          },
+          "type": "array"
+        },
+        "reasonReference": {
+          "description": "Condition or observation that supports why the medication was ordered.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "instantiatesCanonical": {
+          "description": "The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.",
+          "items": {
+            "$ref": "#/definitions/canonical"
+          },
+          "type": "array"
+        },
+        "instantiatesUri": {
+          "description": "The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.",
+          "items": {
+            "$ref": "#/definitions/uri"
+          },
+          "type": "array"
+        },
+        "basedOn": {
+          "description": "A plan or request that is fulfilled in whole or in part by this medication request.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "groupIdentifier": {
+          "description": "A shared identifier common to all requests that were authorized more or less simultaneously by a single author, representing the identifier of the requisition or prescription.",
+          "$ref": "#/definitions/Identifier"
+        },
+        "courseOfTherapyType": {
+          "description": "The description of the overall patte3rn of the administration of the medication to the patient.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "insurance": {
+          "description": "Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be required for delivering the requested service.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "note": {
+          "description": "Extra information about the prescription that could not be conveyed by the other attributes.",
+          "items": {
+            "$ref": "#/definitions/Annotation"
+          },
+          "type": "array"
+        },
+        "dosageInstruction": {
+          "description": "Indicates how the medication is to be used by the patient.",
+          "items": {
+            "$ref": "#/definitions/Dosage"
+          },
+          "type": "array"
+        },
+        "dispenseRequest": {
+          "description": "Indicates the specific details for the dispense or medication supply part of a medication request (also known as a Medication Prescription or Medication Order).  Note that this information is not always sent with the order.  There may be in some settings (e.g. hospitals) institutional or system support for completing the dispense details in the pharmacy department.",
+          "$ref": "#/definitions/MedicationRequest_DispenseRequest"
+        },
+        "substitution": {
+          "description": "Indicates whether or not substitution can or should be part of the dispense. In some cases, substitution must happen, in other cases substitution must not happen. This block explains the prescriber's intent. If nothing is specified substitution may be done.",
+          "$ref": "#/definitions/MedicationRequest_Substitution"
+        },
+        "priorPrescription": {
+          "description": "A link to a resource representing an earlier order related order or prescription.",
+          "$ref": "#/definitions/Reference"
+        },
+        "detectedIssue": {
+          "description": "Indicates an actual or potential clinical issue with or between one or more active or proposed clinical actions for a patient; e.g. Drug-drug interaction, duplicate therapy, dosage alert etc.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "eventHistory": {
+          "description": "Links to Provenance records for past versions of this resource or fulfilling request or event resources that identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the resource.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
         }
       },
       "additionalProperties": false,
       "required": [
+        "subject",
         "resourceType"
       ]
     },
@@ -214,6 +352,10 @@
       },
       "additionalProperties": false
     },
+    "boolean": {
+      "type": "boolean",
+      "description": "Value of \"true\" or \"false\""
+    },
     "Reference": {
       "description": "A reference from one resource to another.",
       "properties": {
@@ -240,64 +382,168 @@
       },
       "additionalProperties": false
     },
-    "Ratio": {
-      "description": "A relationship of two Quantity values - expressed as a numerator and a denominator.",
-      "properties": {
-        "id": {
-          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
-          "$ref": "#/definitions/string"
-        },
-        "numerator": {
-          "description": "The value of the numerator.",
-          "$ref": "#/definitions/Quantity"
-        },
-        "denominator": {
-          "description": "The value of the denominator.",
-          "$ref": "#/definitions/Quantity"
-        }
-      },
-      "additionalProperties": false
+    "dateTime": {
+      "type": "string",
+      "description": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
     },
-    "Medication_Ingredient": {
-      "description": "This resource is primarily used for the identification and definition of a medication for the purposes of prescribing, dispensing, and administering a medication as well as for making statements about medication use.",
+    "canonical": {
+      "type": "string",
+      "description": "A URI that is a reference to a canonical URL on a FHIR resource"
+    },
+    "Annotation": {
+      "description": "A  text note which also  contains information about who made the statement and when.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "itemCodeableConcept": {
-          "description": "The actual ingredient - either a substance (simple ingredient) or another medication of a medication.",
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "itemReference": {
-          "description": "The actual ingredient - either a substance (simple ingredient) or another medication of a medication.",
+        "authorReference": {
+          "description": "The individual responsible for making the annotation.",
           "$ref": "#/definitions/Reference"
         },
-        "isActive": {
-          "description": "Indication of whether this ingredient affects the therapeutic action of the drug.",
-          "$ref": "#/definitions/boolean"
+        "authorString": {
+          "description": "The individual responsible for making the annotation.",
+          "type": "string"
         },
-        "strength": {
-          "description": "Specifies how many (or how much) of the items there are in this Medication.  For example, 250 mg per tablet.  This is expressed as a ratio where the numerator is 250mg and the denominator is 1 tablet.",
-          "$ref": "#/definitions/Ratio"
+        "time": {
+          "description": "Indicates when this particular annotation was made.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "text": {
+          "description": "The text of the annotation in markdown format.",
+          "$ref": "#/definitions/markdown"
         }
       },
       "additionalProperties": false
     },
-    "Medication_Batch": {
-      "description": "This resource is primarily used for the identification and definition of a medication for the purposes of prescribing, dispensing, and administering a medication as well as for making statements about medication use.",
+    "Dosage": {
+      "description": "Indicates how the medication is/was taken or should be taken by the patient.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "lotNumber": {
-          "description": "The assigned lot number of a batch of the specified product.",
+        "sequence": {
+          "description": "Indicates the order in which the dosage instructions should be applied or interpreted.",
+          "$ref": "#/definitions/integer"
+        },
+        "text": {
+          "description": "Free text dosage instructions e.g. SIG.",
           "$ref": "#/definitions/string"
         },
-        "expirationDate": {
-          "description": "When this specific batch of product will expire.",
-          "$ref": "#/definitions/dateTime"
+        "additionalInstruction": {
+          "description": "Supplemental instructions to the patient on how to take the medication  (e.g. \"with meals\" or\"take half to one hour before food\") or warnings for the patient about the medication (e.g. \"may cause drowsiness\" or \"avoid exposure of skin to direct sunlight or sunlamps\").",
+          "items": {
+            "$ref": "#/definitions/CodeableConcept"
+          },
+          "type": "array"
+        },
+        "patientInstruction": {
+          "description": "Instructions in terms that are understood by the patient or consumer.",
+          "$ref": "#/definitions/string"
+        },
+        "timing": {
+          "description": "When medication should be administered.",
+          "$ref": "#/definitions/Timing"
+        },
+        "asNeededBoolean": {
+          "description": "Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).",
+          "type": "boolean"
+        },
+        "asNeededCodeableConcept": {
+          "description": "Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "site": {
+          "description": "Body site to administer to.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "route": {
+          "description": "How drug should enter body.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "method": {
+          "description": "Technique for administering medication.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "doseAndRate": {
+          "description": "The amount of medication administered.",
+          "items": {
+            "$ref": "#/definitions/Dosage_DoseAndRate"
+          },
+          "type": "array"
+        },
+        "maxDosePerPeriod": {
+          "description": "Upper limit on medication per unit of time.",
+          "$ref": "#/definitions/Ratio"
+        },
+        "maxDosePerAdministration": {
+          "description": "Upper limit on medication per administration.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "maxDosePerLifetime": {
+          "description": "Upper limit on medication per lifetime of the patient.",
+          "$ref": "#/definitions/Quantity"
+        }
+      },
+      "additionalProperties": false
+    },
+    "MedicationRequest_DispenseRequest": {
+      "description": "An order or request for both supply of the medication and the instructions for administration of the medication to a patient. The resource is called \"MedicationRequest\" rather than \"MedicationPrescription\" or \"MedicationOrder\" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "initialFill": {
+          "description": "Indicates the quantity or duration for the first dispense of the medication.",
+          "$ref": "#/definitions/MedicationRequest_InitialFill"
+        },
+        "dispenseInterval": {
+          "description": "The minimum period of time that must occur between dispenses of the medication.",
+          "$ref": "#/definitions/Duration"
+        },
+        "validityPeriod": {
+          "description": "This indicates the validity period of a prescription (stale dating the Prescription).",
+          "$ref": "#/definitions/Period"
+        },
+        "numberOfRepeatsAllowed": {
+          "description": "An integer indicating the number of times, in addition to the original dispense, (aka refills or repeats) that the patient can receive the prescribed medication. Usage Notes: This integer does not include the original order dispense. This means that if an order indicates dispense 30 tablets plus \"3 repeats\", then the order can be dispensed a total of 4 times and the patient can receive a total of 120 tablets.  A prescriber may explicitly say that zero refills are permitted after the initial dispense.",
+          "$ref": "#/definitions/unsignedInt"
+        },
+        "quantity": {
+          "description": "The amount that is to be dispensed for one fill.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "expectedSupplyDuration": {
+          "description": "Identifies the period time over which the supplied product is expected to be used, or the length of time the dispense is expected to last.",
+          "$ref": "#/definitions/Duration"
+        },
+        "performer": {
+          "description": "Indicates the intended dispensing Organization specified by the prescriber.",
+          "$ref": "#/definitions/Reference"
+        }
+      },
+      "additionalProperties": false
+    },
+    "MedicationRequest_Substitution": {
+      "description": "An order or request for both supply of the medication and the instructions for administration of the medication to a patient. The resource is called \"MedicationRequest\" rather than \"MedicationPrescription\" or \"MedicationOrder\" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "allowedBoolean": {
+          "description": "True if the prescriber allows a different drug to be dispensed from what was prescribed.",
+          "type": "boolean"
+        },
+        "allowedCodeableConcept": {
+          "description": "True if the prescriber allows a different drug to be dispensed from what was prescribed.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "reason": {
+          "description": "Indicates the reason for the substitution, or why substitution must or must not be performed.",
+          "$ref": "#/definitions/CodeableConcept"
         }
       },
       "additionalProperties": false
@@ -683,10 +929,6 @@
       "type": "string",
       "description": "An instant in time - known at least to the second"
     },
-    "canonical": {
-      "type": "string",
-      "description": "A URI that is a reference to a canonical URL on a FHIR resource"
-    },
     "Coding": {
       "description": "A reference to a code defined by a terminology system.",
       "properties": {
@@ -739,6 +981,91 @@
       },
       "additionalProperties": false
     },
+    "markdown": {
+      "type": "string",
+      "description": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
+    },
+    "integer": {
+      "type": "number",
+      "description": "A whole number"
+    },
+    "Timing": {
+      "description": "Specifies an event that may occur multiple times. Timing schedules are used to record when things are planned, expected or requested to occur. The most common usage is in dosage instructions for medications. They are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "event": {
+          "description": "Identifies specific times when the event occurs.",
+          "items": {
+            "$ref": "#/definitions/dateTime"
+          },
+          "type": "array"
+        },
+        "repeat": {
+          "description": "A set of rules that describe when the event is scheduled.",
+          "$ref": "#/definitions/Timing_Repeat"
+        },
+        "code": {
+          "description": "A code for the timing schedule (or just text in code.text). Some codes such as BID are ubiquitous, but many institutions define their own additional codes. If a code is provided, the code is understood to be a complete statement of whatever is specified in the structured timing data, and either the code or the data may be used to interpret the Timing, with the exception that .repeat.bounds still applies over the code (and is not contained in the code).",
+          "$ref": "#/definitions/CodeableConcept"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Dosage_DoseAndRate": {
+      "description": "Indicates how the medication is/was taken or should be taken by the patient.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "type": {
+          "description": "The kind of dose or rate specified, for example, ordered or calculated.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "doseRange": {
+          "description": "Amount of medication per dose.",
+          "$ref": "#/definitions/Range"
+        },
+        "doseQuantity": {
+          "description": "Amount of medication per dose.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "rateRatio": {
+          "description": "Amount of medication per unit of time.",
+          "$ref": "#/definitions/Ratio"
+        },
+        "rateRange": {
+          "description": "Amount of medication per unit of time.",
+          "$ref": "#/definitions/Range"
+        },
+        "rateQuantity": {
+          "description": "Amount of medication per unit of time.",
+          "$ref": "#/definitions/Quantity"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Ratio": {
+      "description": "A relationship of two Quantity values - expressed as a numerator and a denominator.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "numerator": {
+          "description": "The value of the numerator.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "denominator": {
+          "description": "The value of the denominator.",
+          "$ref": "#/definitions/Quantity"
+        }
+      },
+      "additionalProperties": false
+    },
     "Quantity": {
       "description": "A measured amount (or an amount that can potentially be measured). Note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floating currencies.",
       "properties": {
@@ -774,29 +1101,230 @@
       },
       "additionalProperties": false
     },
-    "boolean": {
-      "type": "boolean",
-      "description": "Value of \"true\" or \"false\""
+    "MedicationRequest_InitialFill": {
+      "description": "An order or request for both supply of the medication and the instructions for administration of the medication to a patient. The resource is called \"MedicationRequest\" rather than \"MedicationPrescription\" or \"MedicationOrder\" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "quantity": {
+          "description": "The amount or quantity to provide as part of the first dispense.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "duration": {
+          "description": "The length of time that the first dispense is expected to last.",
+          "$ref": "#/definitions/Duration"
+        }
+      },
+      "additionalProperties": false
     },
-    "dateTime": {
+    "Duration": {
+      "description": "A length of time.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "value": {
+          "description": "The value of the measured amount. The value includes an implicit precision in the presentation of the value.",
+          "$ref": "#/definitions/decimal"
+        },
+        "comparator": {
+          "description": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"<\" , then the real value is < stated value.",
+          "enum": [
+            "<",
+            "<=",
+            ">=",
+            ">"
+          ]
+        },
+        "unit": {
+          "description": "A human-readable form of the unit.",
+          "$ref": "#/definitions/string"
+        },
+        "system": {
+          "description": "The identification of the system that provides the coded form of the unit.",
+          "$ref": "#/definitions/uri"
+        },
+        "code": {
+          "description": "A computer processable form of the unit in some unit representation system.",
+          "$ref": "#/definitions/code"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Timing_Repeat": {
+      "description": "Specifies an event that may occur multiple times. Timing schedules are used to record when things are planned, expected or requested to occur. The most common usage is in dosage instructions for medications. They are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "boundsDuration": {
+          "description": "Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.",
+          "$ref": "#/definitions/Duration"
+        },
+        "boundsRange": {
+          "description": "Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.",
+          "$ref": "#/definitions/Range"
+        },
+        "boundsPeriod": {
+          "description": "Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.",
+          "$ref": "#/definitions/Period"
+        },
+        "count": {
+          "description": "A total count of the desired number of repetitions across the duration of the entire timing specification. If countMax is present, this element indicates the lower bound of the allowed range of count values.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "countMax": {
+          "description": "If present, indicates that the count is a range - so to perform the action between [count] and [countMax] times.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "duration": {
+          "description": "How long this thing happens for when it happens. If durationMax is present, this element indicates the lower bound of the allowed range of the duration.",
+          "$ref": "#/definitions/decimal"
+        },
+        "durationMax": {
+          "description": "If present, indicates that the duration is a range - so to perform the action between [duration] and [durationMax] time length.",
+          "$ref": "#/definitions/decimal"
+        },
+        "durationUnit": {
+          "description": "The units of time for the duration, in UCUM units.",
+          "enum": [
+            "s",
+            "min",
+            "h",
+            "d",
+            "wk",
+            "mo",
+            "a"
+          ]
+        },
+        "frequency": {
+          "description": "The number of times to repeat the action within the specified period. If frequencyMax is present, this element indicates the lower bound of the allowed range of the frequency.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "frequencyMax": {
+          "description": "If present, indicates that the frequency is a range - so to repeat between [frequency] and [frequencyMax] times within the period or period range.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "period": {
+          "description": "Indicates the duration of time over which repetitions are to occur; e.g. to express \"3 times per day\", 3 would be the frequency and \"1 day\" would be the period. If periodMax is present, this element indicates the lower bound of the allowed range of the period length.",
+          "$ref": "#/definitions/decimal"
+        },
+        "periodMax": {
+          "description": "If present, indicates that the period is a range from [period] to [periodMax], allowing expressing concepts such as \"do this once every 3-5 days.",
+          "$ref": "#/definitions/decimal"
+        },
+        "periodUnit": {
+          "description": "The units of time for the period in UCUM units.",
+          "enum": [
+            "s",
+            "min",
+            "h",
+            "d",
+            "wk",
+            "mo",
+            "a"
+          ]
+        },
+        "dayOfWeek": {
+          "description": "If one or more days of week is provided, then the action happens only on the specified day(s).",
+          "items": {
+            "$ref": "#/definitions/code"
+          },
+          "type": "array"
+        },
+        "timeOfDay": {
+          "description": "Specified time of day for action to take place.",
+          "items": {
+            "$ref": "#/definitions/time"
+          },
+          "type": "array"
+        },
+        "when": {
+          "description": "An approximate time period during the day, potentially linked to an event of daily living that indicates when the action should occur.",
+          "items": {
+            "enum": [
+              "MORN",
+              "MORN.early",
+              "MORN.late",
+              "NOON",
+              "AFT",
+              "AFT.early",
+              "AFT.late",
+              "EVE",
+              "EVE.early",
+              "EVE.late",
+              "NIGHT",
+              "PHS",
+              "HS",
+              "WAKE",
+              "C",
+              "CM",
+              "CD",
+              "CV",
+              "AC",
+              "ACM",
+              "ACD",
+              "ACV",
+              "PC",
+              "PCM",
+              "PCD",
+              "PCV"
+            ]
+          },
+          "type": "array"
+        },
+        "offset": {
+          "description": "The number of minutes from the event. If the event code does not indicate whether the minutes is before or after the event, then the offset is assumed to be after the event.",
+          "$ref": "#/definitions/unsignedInt"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Range": {
+      "description": "A set of ordered Quantities defined by a low and high limit.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "low": {
+          "description": "The low limit. The boundary is inclusive.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "high": {
+          "description": "The high limit. The boundary is inclusive.",
+          "$ref": "#/definitions/Quantity"
+        }
+      },
+      "additionalProperties": false
+    },
+    "positiveInt": {
+      "type": "number",
+      "description": "An integer with a value that is positive (e.g. >0)"
+    },
+    "time": {
       "type": "string",
-      "description": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+      "description": "A time during the day, with no date specified"
     }
   },
   "host": "atdevportal.mphrx.com",
   "basePath": "/minerva/fhir/r4/",
   "info": {
-    "title": "MedicationFHIRAPI",
+    "title": "MedicationRequestFHIRAPI",
     "version": "4.0",
-    "description": "This resource is primarily used for the identification and definition of a medication for the purposes of prescribing, dispensing, and administering a medication as well as for making statements about medication use."
+    "description": "An order or request for both supply of the medication and the instructions for administration of the medication to a patient. The resource is called \"MedicationRequest\" rather than \"MedicationPrescription\" or \"MedicationOrder\" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns."
   },
   "paths": {
-    "/Medication": {
+    "/MedicationRequest": {
       "get": {
         "tags": [
-          "Medication"
+          "MedicationRequest"
         ],
-        "summary": "Get Medication",
+        "summary": "Get MedicationRequest",
         "parameters": [
           {
             "name": "_id",
@@ -823,52 +1351,94 @@
             "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance\r\n* [Condition](condition.html): Code for the condition\r\n* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered\r\n* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code\r\n* [List](list.html): What the purpose of this list is\r\n* [Medication](medication.html): Returns medications for a specific code\r\n* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code\r\n* [MedicationStatement](medicationstatement.html): Return statements of this medication code\r\n* [Observation](observation.html): The code of the observation type\r\n* [Procedure](procedure.html): A code to identify a  procedure\r\n* [ServiceRequest](servicerequest.html): What is being requested/ordered\r\n"
           },
           {
-            "name": "expiration-date",
-            "in": "query",
-            "type": "string",
-            "description": "Returns medications in a batch with this expiration date"
-          },
-          {
-            "name": "form",
-            "in": "query",
-            "type": "string",
-            "description": "Returns medications for a specific dose form"
-          },
-          {
             "name": "identifier",
             "in": "query",
             "type": "string",
-            "description": "Returns medications with this external identifier"
+            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): External ids for this item\r\n* [CarePlan](careplan.html): External Ids for this plan\r\n* [CareTeam](careteam.html): External Ids for this team\r\n* [Composition](composition.html): Version-independent identifier for the Composition\r\n* [Condition](condition.html): A unique identifier of the condition record\r\n* [Consent](consent.html): Identifier for this record (external references)\r\n* [DetectedIssue](detectedissue.html): Unique id for the detected issue\r\n* [DeviceRequest](devicerequest.html): Business identifier for request/order\r\n* [DiagnosticReport](diagnosticreport.html): An identifier for the report\r\n* [DocumentManifest](documentmanifest.html): Unique Identifier for the set of documents\r\n* [DocumentReference](documentreference.html): Master Version Specific Identifier\r\n* [Encounter](encounter.html): Identifier(s) by which this encounter is known\r\n* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier\r\n* [Goal](goal.html): External Ids for this goal\r\n* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID and Accession number\r\n* [Immunization](immunization.html): Business identifier\r\n* [List](list.html): Business identifier\r\n* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier\r\n* [MedicationStatement](medicationstatement.html): Return statements with this external identifier\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier\r\n* [Observation](observation.html): The unique id for a particular observation\r\n* [Procedure](procedure.html): A unique identifier for a procedure\r\n* [RiskAssessment](riskassessment.html): Unique identifier for the assessment\r\n* [ServiceRequest](servicerequest.html): Identifiers assigned to this order\r\n* [SupplyDelivery](supplydelivery.html): External identifier\r\n* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier\r\n"
           },
           {
-            "name": "ingredient",
+            "name": "patient",
             "in": "query",
             "type": "string",
-            "description": "Returns medications for this ingredient reference"
+            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for\r\n* [CarePlan](careplan.html): Who the care plan is for\r\n* [CareTeam](careteam.html): Who care team is for\r\n* [ClinicalImpression](clinicalimpression.html): Patient or group assessed\r\n* [Composition](composition.html): Who and/or what the composition is about\r\n* [Condition](condition.html): Who has the condition?\r\n* [Consent](consent.html): Who the consent applies to\r\n* [DetectedIssue](detectedissue.html): Associated patient\r\n* [DeviceRequest](devicerequest.html): Individual the service is ordered for\r\n* [DeviceUseStatement](deviceusestatement.html): Search by subject - a patient\r\n* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient\r\n* [DocumentManifest](documentmanifest.html): The subject of the set of documents\r\n* [DocumentReference](documentreference.html): Who/what is the subject of the document\r\n* [Encounter](encounter.html): The patient or group present at the encounter\r\n* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care\r\n* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for\r\n* [Flag](flag.html): The identity of a subject to list flags for\r\n* [Goal](goal.html): Who this goal is intended for\r\n* [ImagingStudy](imagingstudy.html): Who the study is about\r\n* [Immunization](immunization.html): The patient for the vaccination record\r\n* [List](list.html): If all resources have the same subject\r\n* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for\r\n* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for\r\n* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient\r\n* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.\r\n* [NutritionOrder](nutritionorder.html): The identity of the person who requires the diet, formula or nutritional supplement\r\n* [Observation](observation.html): The subject that the observation is about (if patient)\r\n* [Procedure](procedure.html): Search by subject - a patient\r\n* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?\r\n* [ServiceRequest](servicerequest.html): Search by subject - a patient\r\n* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied\r\n* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for\r\n"
           },
           {
-            "name": "ingredient-code",
+            "name": "medication",
             "in": "query",
             "type": "string",
-            "description": "Returns medications for this ingredient code"
-          },
-          {
-            "name": "lot-number",
-            "in": "query",
-            "type": "string",
-            "description": "Returns medications in a batch with this lot number"
-          },
-          {
-            "name": "manufacturer",
-            "in": "query",
-            "type": "string",
-            "description": "Returns medications made or sold for this manufacturer"
+            "description": "Multiple Resources: \r\n\r\n* [MedicationAdministration](medicationadministration.html): Return administrations of this medication resource\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine resource\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions for this medication reference\r\n* [MedicationStatement](medicationstatement.html): Return statements of this medication reference\r\n"
           },
           {
             "name": "status",
             "in": "query",
             "type": "string",
-            "description": "Returns medications for this status"
+            "description": "Multiple Resources: \r\n\r\n* [MedicationAdministration](medicationadministration.html): MedicationAdministration event status (for example one of active/paused/completed/nullified)\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with a specified dispense status\r\n* [MedicationRequest](medicationrequest.html): Status of the prescription\r\n* [MedicationStatement](medicationstatement.html): Return statements that match the given status\r\n"
+          },
+          {
+            "name": "authoredon",
+            "in": "query",
+            "type": "string",
+            "description": "Return prescriptions written on this date"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string",
+            "description": "Returns prescriptions with different categories"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "type": "string",
+            "description": "Multiple Resources: \r\n\r\n* [MedicationRequest](medicationrequest.html): Returns medication request to be administered on a specific date\r\n"
+          },
+          {
+            "name": "encounter",
+            "in": "query",
+            "type": "string",
+            "description": "Multiple Resources: \r\n\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this encounter identifier\r\n"
+          },
+          {
+            "name": "intended-dispenser",
+            "in": "query",
+            "type": "string",
+            "description": "Returns prescriptions intended to be dispensed by this Organization"
+          },
+          {
+            "name": "intended-performer",
+            "in": "query",
+            "type": "string",
+            "description": "Returns the intended performer of the administration of the medication request"
+          },
+          {
+            "name": "intended-performertype",
+            "in": "query",
+            "type": "string",
+            "description": "Returns requests for a specific type of performer"
+          },
+          {
+            "name": "intent",
+            "in": "query",
+            "type": "string",
+            "description": "Returns prescriptions with different intents"
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "type": "string",
+            "description": "Returns prescriptions with different priorities"
+          },
+          {
+            "name": "requester",
+            "in": "query",
+            "type": "string",
+            "description": "Returns prescriptions prescribed by this prescriber"
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "type": "string",
+            "description": "The identity of a patient to list orders  for"
           }
         ],
         "responses": {
@@ -899,7 +1469,7 @@
         }
       }
     },
-    "/Medication/{id}": {
+    "/MedicationRequest/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -910,16 +1480,16 @@
       ],
       "get": {
         "tags": [
-          "Medication"
+          "MedicationRequest"
         ],
-        "summary": "Retrieve Medication by ID",
-        "description": "Retrieve Medication by providing ID",
+        "summary": "Retrieve MedicationRequest by ID",
+        "description": "Retrieve MedicationRequest by providing ID",
         "parameters": [],
         "responses": {
           "200": {
             "description": "Success",
             "schema": {
-              "$ref": "#/definitions/Medication"
+              "$ref": "#/definitions/MedicationRequest"
             }
           },
           "400": {

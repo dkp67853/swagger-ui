@@ -1,11 +1,11 @@
 {
   "swagger": "2.0",
   "definitions": {
-    "DocumentReference": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "CarePlan": {
+      "description": "Describes the intention of how one or more practitioners intend to deliver care for a particular patient, group or community for a period of time, possibly limited to care for a specific condition or set of conditions.",
       "properties": {
         "resourceType": {
-          "description": "This is a DocumentReference resource",
+          "description": "This is a CarePlan resource",
           "type": "string"
         },
         "id": {
@@ -28,96 +28,144 @@
           "description": "A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.",
           "$ref": "#/definitions/Narrative"
         },
-        "masterIdentifier": {
-          "description": "Document identifier as assigned by the source of the document. This identifier is specific to this version of the document. This unique identifier may be used elsewhere to identify this version of the document.",
-          "$ref": "#/definitions/Identifier"
-        },
         "identifier": {
-          "description": "Other identifiers associated with the document, including version independent identifiers.",
+          "description": "Business identifiers assigned to this care plan by the performer or other systems which remain constant as the resource is updated and propagates from server to server.",
           "items": {
             "$ref": "#/definitions/Identifier"
           },
           "type": "array"
         },
-        "status": {
-          "description": "The status of this document reference.",
-          "enum": [
-            "current",
-            "superseded",
-            "entered-in-error"
-          ]
-        },
-        "docStatus": {
-          "description": "The status of the underlying document.",
-          "$ref": "#/definitions/code"
-        },
-        "type": {
-          "description": "Specifies the particular kind of document referenced  (e.g. History and Physical, Discharge Summary, Progress Note). This usually equates to the purpose of making the document referenced.",
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "category": {
-          "description": "A categorization for the type of document referenced - helps for indexing and searching. This may be implied by or derived from the code specified in the DocumentReference.type.",
+        "instantiatesCanonical": {
+          "description": "The URL pointing to a FHIR-defined protocol, guideline, questionnaire or other definition that is adhered to in whole or in part by this CarePlan.",
           "items": {
-            "$ref": "#/definitions/CodeableConcept"
+            "$ref": "#/definitions/canonical"
           },
           "type": "array"
         },
-        "subject": {
-          "description": "Who or what the document is about. The document can be about a person, (patient or healthcare practitioner), a device (e.g. a machine) or even a group of subjects (such as a document about a herd of farm animals, or a set of patients that share a common exposure).",
-          "$ref": "#/definitions/Reference"
+        "instantiatesUri": {
+          "description": "The URL pointing to an externally maintained protocol, guideline, questionnaire or other definition that is adhered to in whole or in part by this CarePlan.",
+          "items": {
+            "$ref": "#/definitions/uri"
+          },
+          "type": "array"
         },
-        "date": {
-          "description": "When the document reference was created.",
-          "$ref": "#/definitions/instant"
-        },
-        "author": {
-          "description": "Identifies who is responsible for adding the information to the document.",
+        "basedOn": {
+          "description": "A care plan that is fulfilled in whole or in part by this care plan.",
           "items": {
             "$ref": "#/definitions/Reference"
           },
           "type": "array"
         },
-        "authenticator": {
-          "description": "Which person or organization authenticates that this document is valid.",
-          "$ref": "#/definitions/Reference"
-        },
-        "custodian": {
-          "description": "Identifies the organization or group who is responsible for ongoing maintenance of and access to the document.",
-          "$ref": "#/definitions/Reference"
-        },
-        "relatesTo": {
-          "description": "Relationships that this document has with other document references that already exist.",
+        "replaces": {
+          "description": "Completed or terminated care plan whose function is taken by this new care plan.",
           "items": {
-            "$ref": "#/definitions/DocumentReference_RelatesTo"
+            "$ref": "#/definitions/Reference"
           },
           "type": "array"
         },
-        "description": {
-          "description": "Human-readable description of the source document.",
-          "$ref": "#/definitions/string"
+        "partOf": {
+          "description": "A larger care plan of which this particular care plan is a component or step.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
         },
-        "securityLabel": {
-          "description": "A set of Security-Tag codes specifying the level of privacy/security of the Document. Note that DocumentReference.meta.security contains the security labels of the \"reference\" to the document, while DocumentReference.securityLabel contains a snapshot of the security labels on the document the reference refers to.",
+        "status": {
+          "description": "Indicates whether the plan is currently being acted upon, represents future intentions or is now a historical record.",
+          "$ref": "#/definitions/code"
+        },
+        "intent": {
+          "description": "Indicates the level of authority/intentionality associated with the care plan and where the care plan fits into the workflow chain.",
+          "$ref": "#/definitions/code"
+        },
+        "category": {
+          "description": "Identifies what \"kind\" of plan this is to support differentiation between multiple co-existing plans; e.g. \"Home health\", \"psychiatric\", \"asthma\", \"disease management\", \"wellness plan\", etc.",
           "items": {
             "$ref": "#/definitions/CodeableConcept"
           },
           "type": "array"
         },
-        "content": {
-          "description": "The document and format referenced. There may be multiple content element repetitions, each with a different format.",
+        "title": {
+          "description": "Human-friendly name for the care plan.",
+          "$ref": "#/definitions/string"
+        },
+        "description": {
+          "description": "A description of the scope and nature of the plan.",
+          "$ref": "#/definitions/string"
+        },
+        "subject": {
+          "description": "Identifies the patient or group whose intended care is described by the plan.",
+          "$ref": "#/definitions/Reference"
+        },
+        "encounter": {
+          "description": "The Encounter during which this CarePlan was created or to which the creation of this record is tightly associated.",
+          "$ref": "#/definitions/Reference"
+        },
+        "period": {
+          "description": "Indicates when the plan did (or is intended to) come into effect and end.",
+          "$ref": "#/definitions/Period"
+        },
+        "created": {
+          "description": "Represents when this particular CarePlan record was created in the system, which is often a system-generated date.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "author": {
+          "description": "When populated, the author is responsible for the care plan.  The care plan is attributed to the author.",
+          "$ref": "#/definitions/Reference"
+        },
+        "contributor": {
+          "description": "Identifies the individual(s) or organization who provided the contents of the care plan.",
           "items": {
-            "$ref": "#/definitions/DocumentReference_Content"
+            "$ref": "#/definitions/Reference"
           },
           "type": "array"
         },
-        "context": {
-          "description": "The clinical context in which the document was prepared.",
-          "$ref": "#/definitions/DocumentReference_Context"
+        "careTeam": {
+          "description": "Identifies all people and organizations who are expected to be involved in the care envisioned by this plan.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "addresses": {
+          "description": "Identifies the conditions/problems/concerns/diagnoses/etc. whose management and/or mitigation are handled by this plan.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "supportingInfo": {
+          "description": "Identifies portions of the patient's record that specifically influenced the formation of the plan.  These might include comorbidities, recent procedures, limitations, recent assessments, etc.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "goal": {
+          "description": "Describes the intended objective(s) of carrying out the care plan.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "activity": {
+          "description": "Identifies a planned action to occur as part of the plan.  For example, a medication to be used, lab tests to perform, self-monitoring, education, etc.",
+          "items": {
+            "$ref": "#/definitions/CarePlan_Activity"
+          },
+          "type": "array"
+        },
+        "note": {
+          "description": "General notes about the care plan not covered elsewhere.",
+          "items": {
+            "$ref": "#/definitions/Annotation"
+          },
+          "type": "array"
         }
       },
       "additionalProperties": false,
       "required": [
-        "content",
+        "subject",
         "resourceType"
       ]
     },
@@ -242,26 +290,9 @@
       },
       "additionalProperties": false
     },
-    "CodeableConcept": {
-      "description": "A concept that may be defined by a formal reference to a terminology or ontology or may be provided by text.",
-      "properties": {
-        "id": {
-          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
-          "$ref": "#/definitions/string"
-        },
-        "coding": {
-          "description": "A reference to a code defined by a terminology system.",
-          "items": {
-            "$ref": "#/definitions/Coding"
-          },
-          "type": "array"
-        },
-        "text": {
-          "description": "A human language representation of the concept as seen/selected/uttered by the user who entered the data and/or which represents the intended meaning of the user.",
-          "$ref": "#/definitions/string"
-        }
-      },
-      "additionalProperties": false
+    "canonical": {
+      "type": "string",
+      "description": "A URI that is a reference to a canonical URL on a FHIR resource"
     },
     "Reference": {
       "description": "A reference from one resource to another.",
@@ -289,104 +320,114 @@
       },
       "additionalProperties": false
     },
-    "instant": {
-      "type": "string",
-      "description": "An instant in time - known at least to the second"
-    },
-    "DocumentReference_RelatesTo": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "CodeableConcept": {
+      "description": "A concept that may be defined by a formal reference to a terminology or ontology or may be provided by text.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "code": {
-          "description": "The type of relationship that this document has with anther document.",
-          "enum": [
-            "replaces",
-            "transforms",
-            "signs",
-            "appends"
-          ]
+        "coding": {
+          "description": "A reference to a code defined by a terminology system.",
+          "items": {
+            "$ref": "#/definitions/Coding"
+          },
+          "type": "array"
         },
-        "target": {
-          "description": "The target document of this relationship.",
-          "$ref": "#/definitions/Reference"
+        "text": {
+          "description": "A human language representation of the concept as seen/selected/uttered by the user who entered the data and/or which represents the intended meaning of the user.",
+          "$ref": "#/definitions/string"
         }
       },
-      "additionalProperties": false,
-      "required": [
-        "target"
-      ]
+      "additionalProperties": false
     },
     "string": {
       "type": "string",
       "description": "A sequence of Unicode characters"
     },
-    "DocumentReference_Content": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "Period": {
+      "description": "A time period defined by a start and end date and optionally time.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "attachment": {
-          "description": "The document or URL of the document along with critical metadata to prove content has integrity.",
-          "$ref": "#/definitions/Attachment"
+        "start": {
+          "description": "The start of the period. The boundary is inclusive.",
+          "$ref": "#/definitions/dateTime"
         },
-        "format": {
-          "description": "An identifier of the document encoding, structure, and template that the document conforms to beyond the base format indicated in the mimeType.",
-          "$ref": "#/definitions/Coding"
+        "end": {
+          "description": "The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.",
+          "$ref": "#/definitions/dateTime"
         }
       },
-      "additionalProperties": false,
-      "required": [
-        "attachment"
-      ]
+      "additionalProperties": false
     },
-    "DocumentReference_Context": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "dateTime": {
+      "type": "string",
+      "description": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+    },
+    "CarePlan_Activity": {
+      "description": "Describes the intention of how one or more practitioners intend to deliver care for a particular patient, group or community for a period of time, possibly limited to care for a specific condition or set of conditions.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "encounter": {
-          "description": "Describes the clinical encounter or type of care that the document content is associated with.",
-          "items": {
-            "$ref": "#/definitions/Reference"
-          },
-          "type": "array"
-        },
-        "event": {
-          "description": "This list of codes represents the main clinical acts, such as a colonoscopy or an appendectomy, being documented. In some cases, the event is inherent in the type Code, such as a \"History and Physical Report\" in which the procedure being documented is necessarily a \"History and Physical\" act.",
+        "outcomeCodeableConcept": {
+          "description": "Identifies the outcome at the point when the status of the activity is assessed.  For example, the outcome of an education activity could be patient understands (or not).",
           "items": {
             "$ref": "#/definitions/CodeableConcept"
           },
           "type": "array"
         },
-        "period": {
-          "description": "The time period over which the service that is described by the document was provided.",
-          "$ref": "#/definitions/Period"
-        },
-        "facilityType": {
-          "description": "The kind of facility where the patient was seen.",
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "practiceSetting": {
-          "description": "This property may convey specifics about the practice setting where the content was created, often reflecting the clinical specialty.",
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "sourcePatientInfo": {
-          "description": "The Patient Information as known when the document was published. May be a reference to a version specific, or contained.",
-          "$ref": "#/definitions/Reference"
-        },
-        "related": {
-          "description": "Related identifiers or resources associated with the DocumentReference.",
+        "outcomeReference": {
+          "description": "Details of the outcome or action resulting from the activity.  The reference to an \"event\" resource, such as Procedure or Encounter or Observation, is the result/outcome of the activity itself.  The activity can be conveyed using CarePlan.activity.detail OR using the CarePlan.activity.reference (a reference to a “request” resource).",
           "items": {
             "$ref": "#/definitions/Reference"
           },
           "type": "array"
+        },
+        "progress": {
+          "description": "Notes about the adherence/status/progress of the activity.",
+          "items": {
+            "$ref": "#/definitions/Annotation"
+          },
+          "type": "array"
+        },
+        "reference": {
+          "description": "The details of the proposed activity represented in a specific resource.",
+          "$ref": "#/definitions/Reference"
+        },
+        "detail": {
+          "description": "A simple summary of a planned activity suitable for a general care plan system (e.g. form driven) that doesn't know about specific resources such as procedure etc.",
+          "$ref": "#/definitions/CarePlan_Detail"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Annotation": {
+      "description": "A  text note which also  contains information about who made the statement and when.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "authorReference": {
+          "description": "The individual responsible for making the annotation.",
+          "$ref": "#/definitions/Reference"
+        },
+        "authorString": {
+          "description": "The individual responsible for making the annotation.",
+          "type": "string"
+        },
+        "time": {
+          "description": "Indicates when this particular annotation was made.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "text": {
+          "description": "The text of the annotation in markdown format.",
+          "$ref": "#/definitions/markdown"
         }
       },
       "additionalProperties": false
@@ -764,9 +805,9 @@
       "type": "number",
       "description": "A rational number with implicit precision"
     },
-    "canonical": {
+    "instant": {
       "type": "string",
-      "description": "A URI that is a reference to a canonical URL on a FHIR resource"
+      "description": "An instant in time - known at least to the second"
     },
     "Coding": {
       "description": "A reference to a code defined by a terminology system.",
@@ -802,94 +843,415 @@
       "description": "xhtml - escaped html (see specfication)",
       "type": "string"
     },
-    "Period": {
-      "description": "A time period defined by a start and end date and optionally time.",
+    "CarePlan_Detail": {
+      "description": "Describes the intention of how one or more practitioners intend to deliver care for a particular patient, group or community for a period of time, possibly limited to care for a specific condition or set of conditions.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "start": {
-          "description": "The start of the period. The boundary is inclusive.",
-          "$ref": "#/definitions/dateTime"
+        "kind": {
+          "description": "A description of the kind of resource the in-line definition of a care plan activity is representing.  The CarePlan.activity.detail is an in-line definition when a resource is not referenced using CarePlan.activity.reference.  For example, a MedicationRequest, a ServiceRequest, or a CommunicationRequest.",
+          "$ref": "#/definitions/code"
         },
-        "end": {
-          "description": "The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.",
-          "$ref": "#/definitions/dateTime"
+        "instantiatesCanonical": {
+          "description": "The URL pointing to a FHIR-defined protocol, guideline, questionnaire or other definition that is adhered to in whole or in part by this CarePlan activity.",
+          "items": {
+            "$ref": "#/definitions/canonical"
+          },
+          "type": "array"
+        },
+        "instantiatesUri": {
+          "description": "The URL pointing to an externally maintained protocol, guideline, questionnaire or other definition that is adhered to in whole or in part by this CarePlan activity.",
+          "items": {
+            "$ref": "#/definitions/uri"
+          },
+          "type": "array"
+        },
+        "code": {
+          "description": "Detailed description of the type of planned activity; e.g. what lab test, what procedure, what kind of encounter.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "reasonCode": {
+          "description": "Provides the rationale that drove the inclusion of this particular activity as part of the plan or the reason why the activity was prohibited.",
+          "items": {
+            "$ref": "#/definitions/CodeableConcept"
+          },
+          "type": "array"
+        },
+        "reasonReference": {
+          "description": "Indicates another resource, such as the health condition(s), whose existence justifies this request and drove the inclusion of this particular activity as part of the plan.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "goal": {
+          "description": "Internal reference that identifies the goals that this activity is intended to contribute towards meeting.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "status": {
+          "description": "Identifies what progress is being made for the specific activity.",
+          "enum": [
+            "not-started",
+            "scheduled",
+            "in-progress",
+            "on-hold",
+            "completed",
+            "cancelled",
+            "stopped",
+            "unknown",
+            "entered-in-error"
+          ]
+        },
+        "statusReason": {
+          "description": "Provides reason why the activity isn't yet started, is on hold, was cancelled, etc.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "doNotPerform": {
+          "description": "If true, indicates that the described activity is one that must NOT be engaged in when following the plan.  If false, or missing, indicates that the described activity is one that should be engaged in when following the plan.",
+          "$ref": "#/definitions/boolean"
+        },
+        "scheduledTiming": {
+          "description": "The period, timing or frequency upon which the described activity is to occur.",
+          "$ref": "#/definitions/Timing"
+        },
+        "scheduledPeriod": {
+          "description": "The period, timing or frequency upon which the described activity is to occur.",
+          "$ref": "#/definitions/Period"
+        },
+        "scheduledString": {
+          "description": "The period, timing or frequency upon which the described activity is to occur.",
+          "type": "string"
+        },
+        "location": {
+          "description": "Identifies the facility where the activity will occur; e.g. home, hospital, specific clinic, etc.",
+          "$ref": "#/definitions/Reference"
+        },
+        "performer": {
+          "description": "Identifies who's expected to be involved in the activity.",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "productCodeableConcept": {
+          "description": "Identifies the food, drug or other product to be consumed or supplied in the activity.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "productReference": {
+          "description": "Identifies the food, drug or other product to be consumed or supplied in the activity.",
+          "$ref": "#/definitions/Reference"
+        },
+        "dailyAmount": {
+          "description": "Identifies the quantity expected to be consumed in a given day.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "quantity": {
+          "description": "Identifies the quantity expected to be supplied, administered or consumed by the subject.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "description": {
+          "description": "This provides a textual description of constraints on the intended activity occurrence, including relation to other activities.  It may also include objectives, pre-conditions and end-conditions.  Finally, it may convey specifics about the activity such as body site, method, route, etc.",
+          "$ref": "#/definitions/string"
         }
       },
       "additionalProperties": false
     },
-    "Attachment": {
-      "description": "For referring to data content defined in other formats.",
-      "properties": {
-        "id": {
-          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
-          "$ref": "#/definitions/string"
-        },
-        "contentType": {
-          "description": "Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.",
-          "$ref": "#/definitions/code"
-        },
-        "language": {
-          "description": "The human language of the content. The value can be any valid value according to BCP 47.",
-          "$ref": "#/definitions/code"
-        },
-        "data": {
-          "description": "The actual data of the attachment - a sequence of bytes, base64 encoded.",
-          "$ref": "#/definitions/base64Binary"
-        },
-        "url": {
-          "description": "A location where the data can be accessed.",
-          "$ref": "#/definitions/url"
-        },
-        "size": {
-          "description": "The number of bytes of data that make up this attachment (before base64 encoding, if that is done).",
-          "$ref": "#/definitions/unsignedInt"
-        },
-        "hash": {
-          "description": "The calculated hash of the data using SHA-1. Represented using base64.",
-          "$ref": "#/definitions/base64Binary"
-        },
-        "title": {
-          "description": "A label or set of text to display in place of the data.",
-          "$ref": "#/definitions/string"
-        },
-        "creation": {
-          "description": "The date that the attachment was first created.",
-          "$ref": "#/definitions/dateTime"
-        }
-      },
-      "additionalProperties": false
+    "markdown": {
+      "type": "string",
+      "description": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
     },
     "boolean": {
       "type": "boolean",
       "description": "Value of \"true\" or \"false\""
     },
-    "dateTime": {
-      "type": "string",
-      "description": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+    "Timing": {
+      "description": "Specifies an event that may occur multiple times. Timing schedules are used to record when things are planned, expected or requested to occur. The most common usage is in dosage instructions for medications. They are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "event": {
+          "description": "Identifies specific times when the event occurs.",
+          "items": {
+            "$ref": "#/definitions/dateTime"
+          },
+          "type": "array"
+        },
+        "repeat": {
+          "description": "A set of rules that describe when the event is scheduled.",
+          "$ref": "#/definitions/Timing_Repeat"
+        },
+        "code": {
+          "description": "A code for the timing schedule (or just text in code.text). Some codes such as BID are ubiquitous, but many institutions define their own additional codes. If a code is provided, the code is understood to be a complete statement of whatever is specified in the structured timing data, and either the code or the data may be used to interpret the Timing, with the exception that .repeat.bounds still applies over the code (and is not contained in the code).",
+          "$ref": "#/definitions/CodeableConcept"
+        }
+      },
+      "additionalProperties": false
     },
-    "url": {
-      "type": "string",
-      "description": "A URI that is a literal reference"
+    "Quantity": {
+      "description": "A measured amount (or an amount that can potentially be measured). Note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floating currencies.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "value": {
+          "description": "The value of the measured amount. The value includes an implicit precision in the presentation of the value.",
+          "$ref": "#/definitions/decimal"
+        },
+        "comparator": {
+          "description": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"<\" , then the real value is < stated value.",
+          "enum": [
+            "<",
+            "<=",
+            ">=",
+            ">"
+          ]
+        },
+        "unit": {
+          "description": "A human-readable form of the unit.",
+          "$ref": "#/definitions/string"
+        },
+        "system": {
+          "description": "The identification of the system that provides the coded form of the unit.",
+          "$ref": "#/definitions/uri"
+        },
+        "code": {
+          "description": "A computer processable form of the unit in some unit representation system.",
+          "$ref": "#/definitions/code"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Timing_Repeat": {
+      "description": "Specifies an event that may occur multiple times. Timing schedules are used to record when things are planned, expected or requested to occur. The most common usage is in dosage instructions for medications. They are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "boundsDuration": {
+          "description": "Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.",
+          "$ref": "#/definitions/Duration"
+        },
+        "boundsRange": {
+          "description": "Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.",
+          "$ref": "#/definitions/Range"
+        },
+        "boundsPeriod": {
+          "description": "Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.",
+          "$ref": "#/definitions/Period"
+        },
+        "count": {
+          "description": "A total count of the desired number of repetitions across the duration of the entire timing specification. If countMax is present, this element indicates the lower bound of the allowed range of count values.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "_count": {
+          "description": "Extensions for count",
+          "$ref": "#/definitions/Element"
+        },
+        "countMax": {
+          "description": "If present, indicates that the count is a range - so to perform the action between [count] and [countMax] times.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "_countMax": {
+          "description": "Extensions for countMax",
+          "$ref": "#/definitions/Element"
+        },
+        "duration": {
+          "description": "How long this thing happens for when it happens. If durationMax is present, this element indicates the lower bound of the allowed range of the duration.",
+          "$ref": "#/definitions/decimal"
+        },
+        "_duration": {
+          "description": "Extensions for duration",
+          "$ref": "#/definitions/Element"
+        },
+        "durationMax": {
+          "description": "If present, indicates that the duration is a range - so to perform the action between [duration] and [durationMax] time length.",
+          "$ref": "#/definitions/decimal"
+        },
+        "_durationMax": {
+          "description": "Extensions for durationMax",
+          "$ref": "#/definitions/Element"
+        },
+        "durationUnit": {
+          "description": "The units of time for the duration, in UCUM units.",
+          "enum": [
+            "s",
+            "min",
+            "h",
+            "d",
+            "wk",
+            "mo",
+            "a"
+          ]
+        },
+        "_durationUnit": {
+          "description": "Extensions for durationUnit",
+          "$ref": "#/definitions/Element"
+        },
+        "frequency": {
+          "description": "The number of times to repeat the action within the specified period. If frequencyMax is present, this element indicates the lower bound of the allowed range of the frequency.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "_frequency": {
+          "description": "Extensions for frequency",
+          "$ref": "#/definitions/Element"
+        },
+        "frequencyMax": {
+          "description": "If present, indicates that the frequency is a range - so to repeat between [frequency] and [frequencyMax] times within the period or period range.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "_frequencyMax": {
+          "description": "Extensions for frequencyMax",
+          "$ref": "#/definitions/Element"
+        },
+        "period": {
+          "description": "Indicates the duration of time over which repetitions are to occur; e.g. to express \"3 times per day\", 3 would be the frequency and \"1 day\" would be the period. If periodMax is present, this element indicates the lower bound of the allowed range of the period length.",
+          "$ref": "#/definitions/decimal"
+        },
+        "_period": {
+          "description": "Extensions for period",
+          "$ref": "#/definitions/Element"
+        },
+        "periodMax": {
+          "description": "If present, indicates that the period is a range from [period] to [periodMax], allowing expressing concepts such as \"do this once every 3-5 days.",
+          "$ref": "#/definitions/decimal"
+        },
+        "_periodMax": {
+          "description": "Extensions for periodMax",
+          "$ref": "#/definitions/Element"
+        },
+        "periodUnit": {
+          "description": "The units of time for the period in UCUM units.",
+          "enum": [
+            "s",
+            "min",
+            "h",
+            "d",
+            "wk",
+            "mo",
+            "a"
+          ]
+        },
+        "_periodUnit": {
+          "description": "Extensions for periodUnit",
+          "$ref": "#/definitions/Element"
+        },
+        "dayOfWeek": {
+          "description": "If one or more days of week is provided, then the action happens only on the specified day(s).",
+          "items": {
+            "$ref": "#/definitions/code"
+          },
+          "type": "array"
+        },
+        "_dayOfWeek": {
+          "description": "Extensions for dayOfWeek",
+          "items": {
+            "$ref": "#/definitions/Element"
+          },
+          "type": "array"
+        },
+        "timeOfDay": {
+          "description": "Specified time of day for action to take place.",
+          "items": {
+            "$ref": "#/definitions/time"
+          },
+          "type": "array"
+        },
+        "_timeOfDay": {
+          "description": "Extensions for timeOfDay",
+          "items": {
+            "$ref": "#/definitions/Element"
+          },
+          "type": "array"
+        },
+        "when": {
+          "description": "An approximate time period during the day, potentially linked to an event of daily living that indicates when the action should occur.",
+          "items": {
+            "enum": [
+              "MORN",
+              "MORN.early",
+              "MORN.late",
+              "NOON",
+              "AFT",
+              "AFT.early",
+              "AFT.late",
+              "EVE",
+              "EVE.early",
+              "EVE.late",
+              "NIGHT",
+              "PHS",
+              "HS",
+              "WAKE",
+              "C",
+              "CM",
+              "CD",
+              "CV",
+              "AC",
+              "ACM",
+              "ACD",
+              "ACV",
+              "PC",
+              "PCM",
+              "PCD",
+              "PCV"
+            ]
+          },
+          "type": "array"
+        },
+        "_when": {
+          "description": "Extensions for when",
+          "items": {
+            "$ref": "#/definitions/Element"
+          },
+          "type": "array"
+        },
+        "offset": {
+          "description": "The number of minutes from the event. If the event code does not indicate whether the minutes is before or after the event, then the offset is assumed to be after the event.",
+          "$ref": "#/definitions/unsignedInt"
+        },
+        "_offset": {
+          "description": "Extensions for offset",
+          "$ref": "#/definitions/Element"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "host": "atdevportal.mphrx.com",
   "basePath": "/minerva/fhir/r4/",
   "info": {
-    "title": "DocumentReferenceFHIRAPI",
+    "title": "CarePlanFHIRAPI",
     "version": "4.0",
-    "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text."
+    "description": "Describes the intention of how one or more practitioners intend to deliver care for a particular patient, group or community for a period of time, possibly limited to care for a specific condition or set of conditions."
   },
   "paths": {
-    "/DocumentReference": {
+    "/CarePlan": {
       "get": {
         "tags": [
-          "DocumentReference"
+          "CarePlan"
         ],
-        "summary": "Get DocumentReference",
+        "summary": "Get CarePlan",
         "parameters": [
+          {
+            "name": "_text",
+            "in": "query",
+            "type": "string",
+            "description": "Search on the narrative of the resource"
+          },
+          {
+            "name": "_content",
+            "in": "query",
+            "type": "string",
+            "description": "Search on the entire content of the resource"
+          },
           {
             "name": "_id",
             "in": "query",
@@ -909,6 +1271,36 @@
             "description": "Profiles this resource claims to conform to"
           },
           {
+            "name": "_query",
+            "in": "query",
+            "type": "string",
+            "description": "A custom search profile that describes a specific defined query operation"
+          },
+          {
+            "name": "_security",
+            "in": "query",
+            "type": "string",
+            "description": "Security Labels applied to this resource"
+          },
+          {
+            "name": "_source",
+            "in": "query",
+            "type": "string",
+            "description": "Identifies where the resource comes from"
+          },
+          {
+            "name": "_tag",
+            "in": "query",
+            "type": "string",
+            "description": "Tags applied to this resource"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "type": "string",
+            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Date first version of the resource instance was recorded\r\n* [CarePlan](careplan.html): Time period plan covers\r\n* [CareTeam](careteam.html): Time period team covers\r\n* [ClinicalImpression](clinicalimpression.html): When the assessment was documented\r\n* [Composition](composition.html): Composition editing time\r\n* [Consent](consent.html): When this Consent was created or indexed\r\n* [DiagnosticReport](diagnosticreport.html): The clinically relevant time of the report\r\n* [Encounter](encounter.html): A date within the period the Encounter lasted\r\n* [EpisodeOfCare](episodeofcare.html): The provided date search value falls within the episode of care's period\r\n* [FamilyMemberHistory](familymemberhistory.html): When history was recorded or last updated\r\n* [Flag](flag.html): Time period when flag is active\r\n* [Immunization](immunization.html): Vaccination  (non)-Administration Date\r\n* [List](list.html): When the list was prepared\r\n* [Observation](observation.html): Obtained date/time. If the obtained element is a period, a date that falls in the period\r\n* [Procedure](procedure.html): When the procedure was performed\r\n* [RiskAssessment](riskassessment.html): When was assessment made?\r\n* [SupplyRequest](supplyrequest.html): When the request was made\r\n"
+          },
+          {
             "name": "identifier",
             "in": "query",
             "type": "string",
@@ -921,147 +1313,106 @@
             "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for\r\n* [CarePlan](careplan.html): Who the care plan is for\r\n* [CareTeam](careteam.html): Who care team is for\r\n* [ClinicalImpression](clinicalimpression.html): Patient or group assessed\r\n* [Composition](composition.html): Who and/or what the composition is about\r\n* [Condition](condition.html): Who has the condition?\r\n* [Consent](consent.html): Who the consent applies to\r\n* [DetectedIssue](detectedissue.html): Associated patient\r\n* [DeviceRequest](devicerequest.html): Individual the service is ordered for\r\n* [DeviceUseStatement](deviceusestatement.html): Search by subject - a patient\r\n* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient\r\n* [DocumentManifest](documentmanifest.html): The subject of the set of documents\r\n* [DocumentReference](documentreference.html): Who/what is the subject of the document\r\n* [Encounter](encounter.html): The patient or group present at the encounter\r\n* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care\r\n* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for\r\n* [Flag](flag.html): The identity of a subject to list flags for\r\n* [Goal](goal.html): Who this goal is intended for\r\n* [ImagingStudy](imagingstudy.html): Who the study is about\r\n* [Immunization](immunization.html): The patient for the vaccination record\r\n* [List](list.html): If all resources have the same subject\r\n* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for\r\n* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for\r\n* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient\r\n* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.\r\n* [NutritionOrder](nutritionorder.html): The identity of the person who requires the diet, formula or nutritional supplement\r\n* [Observation](observation.html): The subject that the observation is about (if patient)\r\n* [Procedure](procedure.html): Search by subject - a patient\r\n* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?\r\n* [ServiceRequest](servicerequest.html): Search by subject - a patient\r\n* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied\r\n* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for\r\n"
           },
           {
-            "name": "type",
+            "name": "activity-code",
             "in": "query",
             "type": "string",
-            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): allergy | intolerance - Underlying mechanism (if known)\r\n* [Composition](composition.html): Kind of composition (LOINC if possible)\r\n* [DocumentManifest](documentmanifest.html): Kind of document set\r\n* [DocumentReference](documentreference.html): Kind of document (LOINC if possible)\r\n* [Encounter](encounter.html): Specific type of encounter\r\n* [EpisodeOfCare](episodeofcare.html): Type/class  - e.g. specialist referral, disease management\r\n"
+            "description": "Detail type of activity"
           },
           {
-            "name": "encounter",
+            "name": "activity-date",
             "in": "query",
             "type": "string",
-            "description": "Multiple Resources: \r\n\r\n* [Composition](composition.html): Context of the Composition\r\n* [DeviceRequest](devicerequest.html): Encounter during which request was created\r\n* [DiagnosticReport](diagnosticreport.html): The Encounter when the order was made\r\n* [DocumentReference](documentreference.html): Context of the document  content\r\n* [Flag](flag.html): Alert relevant during encounter\r\n* [List](list.html): Context in which list created\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this encounter identifier\r\n* [Observation](observation.html): Encounter related to the observation\r\n* [Procedure](procedure.html): Encounter created as part of\r\n* [RiskAssessment](riskassessment.html): Where was assessment performed?\r\n* [ServiceRequest](servicerequest.html): An encounter in which this request is made\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this encounter identifier\r\n"
+            "description": "Specified date occurs within period specified by CarePlan.activity.detail.scheduled[x]"
           },
           {
-            "name": "authenticator",
+            "name": "activity-reference",
             "in": "query",
             "type": "string",
-            "description": "Who/what authenticated the document"
+            "description": "Activity details defined in specific resource"
           },
           {
-            "name": "author",
+            "name": "based-on",
             "in": "query",
             "type": "string",
-            "description": "Who and/or what authored the document"
+            "description": "Fulfills CarePlan"
+          },
+          {
+            "name": "care-team",
+            "in": "query",
+            "type": "string",
+            "description": "Who's involved in plan?"
           },
           {
             "name": "category",
             "in": "query",
             "type": "string",
-            "description": "Categorization of document"
+            "description": "Type of plan"
           },
           {
-            "name": "contenttype",
+            "name": "condition",
             "in": "query",
             "type": "string",
-            "description": "Mime type of the content, with charset etc."
+            "description": "Health issues this plan addresses"
           },
           {
-            "name": "custodian",
+            "name": "encounter",
             "in": "query",
             "type": "string",
-            "description": "Organization which maintains the document"
+            "description": "Encounter created as part of"
           },
           {
-            "name": "date",
+            "name": "goal",
             "in": "query",
             "type": "string",
-            "description": "When this document reference was created"
+            "description": "Desired outcome of plan"
           },
           {
-            "name": "description",
+            "name": "instantiates-canonical",
             "in": "query",
             "type": "string",
-            "description": "Human-readable description"
+            "description": "Instantiates FHIR protocol or definition"
           },
           {
-            "name": "event",
+            "name": "instantiates-uri",
             "in": "query",
             "type": "string",
-            "description": "Main clinical acts documented"
+            "description": "Instantiates external protocol or definition"
           },
           {
-            "name": "facility",
+            "name": "intent",
             "in": "query",
             "type": "string",
-            "description": "Kind of facility where patient was seen"
+            "description": "proposal | plan | order | option"
           },
           {
-            "name": "format",
+            "name": "part-of",
             "in": "query",
             "type": "string",
-            "description": "Format/content rules for the document"
+            "description": "Part of referenced CarePlan"
           },
           {
-            "name": "language",
+            "name": "performer",
             "in": "query",
             "type": "string",
-            "description": "Human language of the content (BCP-47)"
+            "description": "Matches if the practitioner is listed as a performer in any of the \"simple\" activities.  (For performers of the detailed activities, chain through the activitydetail search parameter.)"
           },
           {
-            "name": "location",
+            "name": "replaces",
             "in": "query",
             "type": "string",
-            "description": "Uri where the data can be found"
-          },
-          {
-            "name": "period",
-            "in": "query",
-            "type": "string",
-            "description": "Time of service that is being documented"
-          },
-          {
-            "name": "related",
-            "in": "query",
-            "type": "string",
-            "description": "Related identifiers or resources"
-          },
-          {
-            "name": "relatesto",
-            "in": "query",
-            "type": "string",
-            "description": "Target of the relationship"
-          },
-          {
-            "name": "relation",
-            "in": "query",
-            "type": "string",
-            "description": "replaces | transforms | signs | appends"
-          },
-          {
-            "name": "security-label",
-            "in": "query",
-            "type": "string",
-            "description": "Document security-tags"
-          },
-          {
-            "name": "setting",
-            "in": "query",
-            "type": "string",
-            "description": "Additional details about where the content was created (e.g. clinical specialty)"
+            "description": "CarePlan replaced by this CarePlan"
           },
           {
             "name": "status",
             "in": "query",
             "type": "string",
-            "description": "current | superseded | entered-in-error",
-            "enum": [
-              "current",
-              "superseded",
-              "entered-in-error"
-            ]
+            "description": "draft | active | suspended | completed | entered-in-error | cancelled | unknown"
           },
           {
             "name": "subject",
             "in": "query",
             "type": "string",
-            "description": "Who/what is the subject of the document"
-          },
-          {
-            "name": "relationship",
-            "in": "query",
-            "type": "string",
-            "description": "Combination of relation and relatesTo"
+            "description": "Who the care plan is for"
           }
         ],
         "responses": {
@@ -1092,7 +1443,7 @@
         }
       }
     },
-    "/DocumentReference/{id}": {
+    "/CarePlan/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -1103,16 +1454,16 @@
       ],
       "get": {
         "tags": [
-          "DocumentReference"
+          "CarePlan"
         ],
-        "summary": "Retrieve DocumentReference by ID",
-        "description": "Retrieve DocumentReference by providing ID",
+        "summary": "Retrieve CarePlan by ID",
+        "description": "Retrieve CarePlan by providing ID",
         "parameters": [],
         "responses": {
           "200": {
             "description": "Success",
             "schema": {
-              "$ref": "#/definitions/DocumentReference"
+              "$ref": "#/definitions/CarePlan"
             }
           },
           "400": {
@@ -1152,7 +1503,7 @@
   ],
   "securityDefinitions": {
     "Bearer": {
-      "name": "Authorization",
+      "name": "x-auth-token",
       "in": "header",
       "type": "apiKey",
       "description": "Authorization header using the Bearer scheme. Example :: 'Authorization: Bearer {token}'"

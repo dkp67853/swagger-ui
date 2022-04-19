@@ -760,7 +760,7 @@
       "description": "Value of \"true\" or \"false\""
     }
   },
-  "host": "webqa1.mphrx.com",
+  "host": "atdevportal.mphrx.com",
   "basePath": "/minerva/fhir/r4/",
   "info": {
     "title": "AccountFHIRAPI",

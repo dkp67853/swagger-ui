@@ -88,7 +88,7 @@ export default class BaseLayout extends React.Component {
       <div className='swagger-ui'>
         <SvgAssets />
         <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
-          <Errors/>
+          {/*<Errors/>*/}
           <Row className="information-container">
             <Col mobile={12}>
               <InfoContainer/>

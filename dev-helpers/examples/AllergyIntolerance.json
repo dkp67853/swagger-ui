@@ -1,11 +1,11 @@
 {
   "swagger": "2.0",
   "definitions": {
-    "DocumentReference": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "AllergyIntolerance": {
+      "description": "Risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.",
       "properties": {
         "resourceType": {
-          "description": "This is a DocumentReference resource",
+          "description": "This is a AllergyIntolerance resource",
           "type": "string"
         },
         "id": {
@@ -28,96 +28,114 @@
           "description": "A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.",
           "$ref": "#/definitions/Narrative"
         },
-        "masterIdentifier": {
-          "description": "Document identifier as assigned by the source of the document. This identifier is specific to this version of the document. This unique identifier may be used elsewhere to identify this version of the document.",
-          "$ref": "#/definitions/Identifier"
-        },
         "identifier": {
-          "description": "Other identifiers associated with the document, including version independent identifiers.",
+          "description": "Business identifiers assigned to this AllergyIntolerance by the performer or other systems which remain constant as the resource is updated and propagates from server to server.",
           "items": {
             "$ref": "#/definitions/Identifier"
           },
           "type": "array"
         },
-        "status": {
-          "description": "The status of this document reference.",
-          "enum": [
-            "current",
-            "superseded",
-            "entered-in-error"
-          ]
-        },
-        "docStatus": {
-          "description": "The status of the underlying document.",
-          "$ref": "#/definitions/code"
-        },
-        "type": {
-          "description": "Specifies the particular kind of document referenced  (e.g. History and Physical, Discharge Summary, Progress Note). This usually equates to the purpose of making the document referenced.",
+        "clinicalStatus": {
+          "description": "The clinical status of the allergy or intolerance.",
           "$ref": "#/definitions/CodeableConcept"
         },
+        "verificationStatus": {
+          "description": "Assertion about certainty associated with the propensity, or potential risk, of a reaction to the identified substance (including pharmaceutical product).",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "type": {
+          "description": "Identification of the underlying physiological mechanism for the reaction risk.",
+          "enum": [
+            "allergy",
+            "intolerance"
+          ]
+        },
         "category": {
-          "description": "A categorization for the type of document referenced - helps for indexing and searching. This may be implied by or derived from the code specified in the DocumentReference.type.",
+          "description": "Category of the identified substance.",
           "items": {
-            "$ref": "#/definitions/CodeableConcept"
+            "enum": [
+              "food",
+              "medication",
+              "environment",
+              "biologic"
+            ]
           },
           "type": "array"
         },
-        "subject": {
-          "description": "Who or what the document is about. The document can be about a person, (patient or healthcare practitioner), a device (e.g. a machine) or even a group of subjects (such as a document about a herd of farm animals, or a set of patients that share a common exposure).",
+        "criticality": {
+          "description": "Estimate of the potential clinical harm, or seriousness, of the reaction to the identified substance.",
+          "enum": [
+            "low",
+            "high",
+            "unable-to-assess"
+          ]
+        },
+        "code": {
+          "description": "Code for an allergy or intolerance statement (either a positive or a negated/excluded statement).  This may be a code for a substance or pharmaceutical product that is considered to be responsible for the adverse reaction risk (e.g., \"Latex\"), an allergy or intolerance condition (e.g., \"Latex allergy\"), or a negated/excluded code for a specific substance or class (e.g., \"No latex allergy\") or a general or categorical negated statement (e.g.,  \"No known allergy\", \"No known drug allergies\").  Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "patient": {
+          "description": "The patient who has the allergy or intolerance.",
           "$ref": "#/definitions/Reference"
         },
-        "date": {
-          "description": "When the document reference was created.",
-          "$ref": "#/definitions/instant"
-        },
-        "author": {
-          "description": "Identifies who is responsible for adding the information to the document.",
-          "items": {
-            "$ref": "#/definitions/Reference"
-          },
-          "type": "array"
-        },
-        "authenticator": {
-          "description": "Which person or organization authenticates that this document is valid.",
+        "encounter": {
+          "description": "The encounter when the allergy or intolerance was asserted.",
           "$ref": "#/definitions/Reference"
         },
-        "custodian": {
-          "description": "Identifies the organization or group who is responsible for ongoing maintenance of and access to the document.",
+        "onsetDateTime": {
+          "description": "Estimated or actual date,  date-time, or age when allergy or intolerance was identified.",
+          "type": "string"
+        },
+        "onsetAge": {
+          "description": "Estimated or actual date,  date-time, or age when allergy or intolerance was identified.",
+          "$ref": "#/definitions/Age"
+        },
+        "onsetPeriod": {
+          "description": "Estimated or actual date,  date-time, or age when allergy or intolerance was identified.",
+          "$ref": "#/definitions/Period"
+        },
+        "onsetRange": {
+          "description": "Estimated or actual date,  date-time, or age when allergy or intolerance was identified.",
+          "$ref": "#/definitions/Range"
+        },
+        "onsetString": {
+          "description": "Estimated or actual date,  date-time, or age when allergy or intolerance was identified.",
+          "type": "string"
+        },
+        "recordedDate": {
+          "description": "The recordedDate represents when this particular AllergyIntolerance record was created in the system, which is often a system-generated date.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "recorder": {
+          "description": "Individual who recorded the record and takes responsibility for its content.",
           "$ref": "#/definitions/Reference"
         },
-        "relatesTo": {
-          "description": "Relationships that this document has with other document references that already exist.",
+        "asserter": {
+          "description": "The source of the information about the allergy that is recorded.",
+          "$ref": "#/definitions/Reference"
+        },
+        "lastOccurrence": {
+          "description": "Represents the date and/or time of the last known occurrence of a reaction event.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "note": {
+          "description": "Additional narrative about the propensity for the Adverse Reaction, not captured in other fields.",
           "items": {
-            "$ref": "#/definitions/DocumentReference_RelatesTo"
+            "$ref": "#/definitions/Annotation"
           },
           "type": "array"
         },
-        "description": {
-          "description": "Human-readable description of the source document.",
-          "$ref": "#/definitions/string"
-        },
-        "securityLabel": {
-          "description": "A set of Security-Tag codes specifying the level of privacy/security of the Document. Note that DocumentReference.meta.security contains the security labels of the \"reference\" to the document, while DocumentReference.securityLabel contains a snapshot of the security labels on the document the reference refers to.",
+        "reaction": {
+          "description": "Details about each adverse reaction event linked to exposure to the identified substance.",
           "items": {
-            "$ref": "#/definitions/CodeableConcept"
+            "$ref": "#/definitions/AllergyIntolerance_Reaction"
           },
           "type": "array"
-        },
-        "content": {
-          "description": "The document and format referenced. There may be multiple content element repetitions, each with a different format.",
-          "items": {
-            "$ref": "#/definitions/DocumentReference_Content"
-          },
-          "type": "array"
-        },
-        "context": {
-          "description": "The clinical context in which the document was prepared.",
-          "$ref": "#/definitions/DocumentReference_Context"
         }
       },
       "additionalProperties": false,
       "required": [
-        "content",
+        "patient",
         "resourceType"
       ]
     },
@@ -289,107 +307,157 @@
       },
       "additionalProperties": false
     },
-    "instant": {
-      "type": "string",
-      "description": "An instant in time - known at least to the second"
-    },
-    "DocumentReference_RelatesTo": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "Age": {
+      "description": "A duration of time during which an organism (or a process) has existed.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "code": {
-          "description": "The type of relationship that this document has with anther document.",
+        "value": {
+          "description": "The value of the measured amount. The value includes an implicit precision in the presentation of the value.",
+          "$ref": "#/definitions/decimal"
+        },
+        "comparator": {
+          "description": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"<\" , then the real value is < stated value.",
           "enum": [
-            "replaces",
-            "transforms",
-            "signs",
-            "appends"
+            "<",
+            "<=",
+            ">=",
+            ">"
           ]
         },
-        "target": {
-          "description": "The target document of this relationship.",
-          "$ref": "#/definitions/Reference"
+        "unit": {
+          "description": "A human-readable form of the unit.",
+          "$ref": "#/definitions/string"
+        },
+        "system": {
+          "description": "The identification of the system that provides the coded form of the unit.",
+          "$ref": "#/definitions/uri"
+        },
+        "code": {
+          "description": "A computer processable form of the unit in some unit representation system.",
+          "$ref": "#/definitions/code"
         }
       },
-      "additionalProperties": false,
-      "required": [
-        "target"
-      ]
+      "additionalProperties": false
     },
-    "string": {
+    "Period": {
+      "description": "A time period defined by a start and end date and optionally time.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "start": {
+          "description": "The start of the period. The boundary is inclusive.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "end": {
+          "description": "The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.",
+          "$ref": "#/definitions/dateTime"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Range": {
+      "description": "A set of ordered Quantities defined by a low and high limit.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "low": {
+          "description": "The low limit. The boundary is inclusive.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "high": {
+          "description": "The high limit. The boundary is inclusive.",
+          "$ref": "#/definitions/Quantity"
+        }
+      },
+      "additionalProperties": false
+    },
+    "dateTime": {
       "type": "string",
-      "description": "A sequence of Unicode characters"
+      "description": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
     },
-    "DocumentReference_Content": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "Annotation": {
+      "description": "A  text note which also  contains information about who made the statement and when.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "attachment": {
-          "description": "The document or URL of the document along with critical metadata to prove content has integrity.",
-          "$ref": "#/definitions/Attachment"
+        "authorReference": {
+          "description": "The individual responsible for making the annotation.",
+          "$ref": "#/definitions/Reference"
         },
-        "format": {
-          "description": "An identifier of the document encoding, structure, and template that the document conforms to beyond the base format indicated in the mimeType.",
-          "$ref": "#/definitions/Coding"
+        "authorString": {
+          "description": "The individual responsible for making the annotation.",
+          "type": "string"
+        },
+        "time": {
+          "description": "Indicates when this particular annotation was made.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "text": {
+          "description": "The text of the annotation in markdown format.",
+          "$ref": "#/definitions/markdown"
         }
       },
-      "additionalProperties": false,
-      "required": [
-        "attachment"
-      ]
+      "additionalProperties": false
     },
-    "DocumentReference_Context": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "AllergyIntolerance_Reaction": {
+      "description": "Risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "encounter": {
-          "description": "Describes the clinical encounter or type of care that the document content is associated with.",
-          "items": {
-            "$ref": "#/definitions/Reference"
-          },
-          "type": "array"
+        "substance": {
+          "description": "Identification of the specific substance (or pharmaceutical product) considered to be responsible for the Adverse Reaction event. Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.",
+          "$ref": "#/definitions/CodeableConcept"
         },
-        "event": {
-          "description": "This list of codes represents the main clinical acts, such as a colonoscopy or an appendectomy, being documented. In some cases, the event is inherent in the type Code, such as a \"History and Physical Report\" in which the procedure being documented is necessarily a \"History and Physical\" act.",
+        "manifestation": {
+          "description": "Clinical symptoms and/or signs that are observed or associated with the adverse reaction event.",
           "items": {
             "$ref": "#/definitions/CodeableConcept"
           },
           "type": "array"
         },
-        "period": {
-          "description": "The time period over which the service that is described by the document was provided.",
-          "$ref": "#/definitions/Period"
+        "description": {
+          "description": "Text description about the reaction as a whole, including details of the manifestation if required.",
+          "$ref": "#/definitions/string"
         },
-        "facilityType": {
-          "description": "The kind of facility where the patient was seen.",
+        "onset": {
+          "description": "Record of the date and/or time of the onset of the Reaction.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "severity": {
+          "description": "Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations.",
+          "enum": [
+            "mild",
+            "moderate",
+            "severe"
+          ]
+        },
+        "exposureRoute": {
+          "description": "Identification of the route by which the subject was exposed to the substance.",
           "$ref": "#/definitions/CodeableConcept"
         },
-        "practiceSetting": {
-          "description": "This property may convey specifics about the practice setting where the content was created, often reflecting the clinical specialty.",
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "sourcePatientInfo": {
-          "description": "The Patient Information as known when the document was published. May be a reference to a version specific, or contained.",
-          "$ref": "#/definitions/Reference"
-        },
-        "related": {
-          "description": "Related identifiers or resources associated with the DocumentReference.",
+        "note": {
+          "description": "Additional text about the adverse reaction event not captured in other fields.",
           "items": {
-            "$ref": "#/definitions/Reference"
+            "$ref": "#/definitions/Annotation"
           },
           "type": "array"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "manifestation"
+      ]
     },
     "OperationOutcome": {
       "description": "A collection of error, warning, or information messages that result from a system action.",
@@ -764,6 +832,14 @@
       "type": "number",
       "description": "A rational number with implicit precision"
     },
+    "string": {
+      "type": "string",
+      "description": "A sequence of Unicode characters"
+    },
+    "instant": {
+      "type": "string",
+      "description": "An instant in time - known at least to the second"
+    },
     "canonical": {
       "type": "string",
       "description": "A URI that is a reference to a canonical URL on a FHIR resource"
@@ -802,93 +878,64 @@
       "description": "xhtml - escaped html (see specfication)",
       "type": "string"
     },
-    "Period": {
-      "description": "A time period defined by a start and end date and optionally time.",
+    "Quantity": {
+      "description": "A measured amount (or an amount that can potentially be measured). Note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floating currencies.",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "start": {
-          "description": "The start of the period. The boundary is inclusive.",
-          "$ref": "#/definitions/dateTime"
+        "value": {
+          "description": "The value of the measured amount. The value includes an implicit precision in the presentation of the value.",
+          "$ref": "#/definitions/decimal"
         },
-        "end": {
-          "description": "The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.",
-          "$ref": "#/definitions/dateTime"
+        "comparator": {
+          "description": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"<\" , then the real value is < stated value.",
+          "enum": [
+            "<",
+            "<=",
+            ">=",
+            ">"
+          ]
+        },
+        "unit": {
+          "description": "A human-readable form of the unit.",
+          "$ref": "#/definitions/string"
+        },
+        "system": {
+          "description": "The identification of the system that provides the coded form of the unit.",
+          "$ref": "#/definitions/uri"
+        },
+        "code": {
+          "description": "A computer processable form of the unit in some unit representation system.",
+          "$ref": "#/definitions/code"
         }
       },
       "additionalProperties": false
     },
-    "Attachment": {
-      "description": "For referring to data content defined in other formats.",
-      "properties": {
-        "id": {
-          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
-          "$ref": "#/definitions/string"
-        },
-        "contentType": {
-          "description": "Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.",
-          "$ref": "#/definitions/code"
-        },
-        "language": {
-          "description": "The human language of the content. The value can be any valid value according to BCP 47.",
-          "$ref": "#/definitions/code"
-        },
-        "data": {
-          "description": "The actual data of the attachment - a sequence of bytes, base64 encoded.",
-          "$ref": "#/definitions/base64Binary"
-        },
-        "url": {
-          "description": "A location where the data can be accessed.",
-          "$ref": "#/definitions/url"
-        },
-        "size": {
-          "description": "The number of bytes of data that make up this attachment (before base64 encoding, if that is done).",
-          "$ref": "#/definitions/unsignedInt"
-        },
-        "hash": {
-          "description": "The calculated hash of the data using SHA-1. Represented using base64.",
-          "$ref": "#/definitions/base64Binary"
-        },
-        "title": {
-          "description": "A label or set of text to display in place of the data.",
-          "$ref": "#/definitions/string"
-        },
-        "creation": {
-          "description": "The date that the attachment was first created.",
-          "$ref": "#/definitions/dateTime"
-        }
-      },
-      "additionalProperties": false
+    "markdown": {
+      "type": "string",
+      "description": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
     },
     "boolean": {
       "type": "boolean",
       "description": "Value of \"true\" or \"false\""
-    },
-    "dateTime": {
-      "type": "string",
-      "description": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-    },
-    "url": {
-      "type": "string",
-      "description": "A URI that is a literal reference"
     }
   },
   "host": "atdevportal.mphrx.com",
   "basePath": "/minerva/fhir/r4/",
   "info": {
-    "title": "DocumentReferenceFHIRAPI",
+    "title": "AllergyIntoleranceFHIRAPI",
     "version": "4.0",
-    "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text."
+    "description": "Risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance."
   },
   "paths": {
-    "/DocumentReference": {
+    "/AllergyIntolerance": {
       "get": {
         "tags": [
-          "DocumentReference"
+          "AllergyIntolerance"
         ],
-        "summary": "Get DocumentReference",
+        "summary": "Get AllergyIntolerance",
         "parameters": [
           {
             "name": "_id",
@@ -909,10 +956,69 @@
             "description": "Profiles this resource claims to conform to"
           },
           {
+            "name": "asserter",
+            "in": "query",
+            "type": "string",
+            "description": "Source of the information about the allergy"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string",
+            "description": "food | medication | environment | biologic"
+          },
+          {
+            "name": "clinical-status",
+            "in": "query",
+            "type": "string",
+            "description": "active | inactive | resolved"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "type": "string",
+            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance\r\n* [Condition](condition.html): Code for the condition\r\n* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered\r\n* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code\r\n* [List](list.html): What the purpose of this list is\r\n* [Medication](medication.html): Returns medications for a specific code\r\n* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code\r\n* [MedicationStatement](medicationstatement.html): Return statements of this medication code\r\n* [Observation](observation.html): The code of the observation type\r\n* [Procedure](procedure.html): A code to identify a  procedure\r\n* [ServiceRequest](servicerequest.html): What is being requested/ordered\r\n"
+          },
+          {
+            "name": "criticality",
+            "in": "query",
+            "type": "string",
+            "description": "low | high | unable-to-assess",
+            "enum": [
+              "low",
+              "high",
+              "unable-to-assess"
+            ]
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "type": "string",
+            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Date first version of the resource instance was recorded\r\n* [CarePlan](careplan.html): Time period plan covers\r\n* [CareTeam](careteam.html): Time period team covers\r\n* [ClinicalImpression](clinicalimpression.html): When the assessment was documented\r\n* [Composition](composition.html): Composition editing time\r\n* [Consent](consent.html): When this Consent was created or indexed\r\n* [DiagnosticReport](diagnosticreport.html): The clinically relevant time of the report\r\n* [Encounter](encounter.html): A date within the period the Encounter lasted\r\n* [EpisodeOfCare](episodeofcare.html): The provided date search value falls within the episode of care's period\r\n* [FamilyMemberHistory](familymemberhistory.html): When history was recorded or last updated\r\n* [Flag](flag.html): Time period when flag is active\r\n* [Immunization](immunization.html): Vaccination  (non)-Administration Date\r\n* [List](list.html): When the list was prepared\r\n* [Observation](observation.html): Obtained date/time. If the obtained element is a period, a date that falls in the period\r\n* [Procedure](procedure.html): When the procedure was performed\r\n* [RiskAssessment](riskassessment.html): When was assessment made?\r\n* [SupplyRequest](supplyrequest.html): When the request was made\r\n"
+          },
+          {
             "name": "identifier",
             "in": "query",
             "type": "string",
             "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): External ids for this item\r\n* [CarePlan](careplan.html): External Ids for this plan\r\n* [CareTeam](careteam.html): External Ids for this team\r\n* [Composition](composition.html): Version-independent identifier for the Composition\r\n* [Condition](condition.html): A unique identifier of the condition record\r\n* [Consent](consent.html): Identifier for this record (external references)\r\n* [DetectedIssue](detectedissue.html): Unique id for the detected issue\r\n* [DeviceRequest](devicerequest.html): Business identifier for request/order\r\n* [DiagnosticReport](diagnosticreport.html): An identifier for the report\r\n* [DocumentManifest](documentmanifest.html): Unique Identifier for the set of documents\r\n* [DocumentReference](documentreference.html): Master Version Specific Identifier\r\n* [Encounter](encounter.html): Identifier(s) by which this encounter is known\r\n* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier\r\n* [Goal](goal.html): External Ids for this goal\r\n* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID and Accession number\r\n* [Immunization](immunization.html): Business identifier\r\n* [List](list.html): Business identifier\r\n* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier\r\n* [MedicationStatement](medicationstatement.html): Return statements with this external identifier\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier\r\n* [Observation](observation.html): The unique id for a particular observation\r\n* [Procedure](procedure.html): A unique identifier for a procedure\r\n* [RiskAssessment](riskassessment.html): Unique identifier for the assessment\r\n* [ServiceRequest](servicerequest.html): Identifiers assigned to this order\r\n* [SupplyDelivery](supplydelivery.html): External identifier\r\n* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier\r\n"
+          },
+          {
+            "name": "last-date",
+            "in": "query",
+            "type": "string",
+            "description": "Date(/time) of last known occurrence of a reaction"
+          },
+          {
+            "name": "manifestation",
+            "in": "query",
+            "type": "string",
+            "description": "Clinical symptoms/signs associated with the Event"
+          },
+          {
+            "name": "onset",
+            "in": "query",
+            "type": "string",
+            "description": "Date(/time) when manifestations showed"
           },
           {
             "name": "patient",
@@ -921,147 +1027,38 @@
             "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for\r\n* [CarePlan](careplan.html): Who the care plan is for\r\n* [CareTeam](careteam.html): Who care team is for\r\n* [ClinicalImpression](clinicalimpression.html): Patient or group assessed\r\n* [Composition](composition.html): Who and/or what the composition is about\r\n* [Condition](condition.html): Who has the condition?\r\n* [Consent](consent.html): Who the consent applies to\r\n* [DetectedIssue](detectedissue.html): Associated patient\r\n* [DeviceRequest](devicerequest.html): Individual the service is ordered for\r\n* [DeviceUseStatement](deviceusestatement.html): Search by subject - a patient\r\n* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient\r\n* [DocumentManifest](documentmanifest.html): The subject of the set of documents\r\n* [DocumentReference](documentreference.html): Who/what is the subject of the document\r\n* [Encounter](encounter.html): The patient or group present at the encounter\r\n* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care\r\n* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for\r\n* [Flag](flag.html): The identity of a subject to list flags for\r\n* [Goal](goal.html): Who this goal is intended for\r\n* [ImagingStudy](imagingstudy.html): Who the study is about\r\n* [Immunization](immunization.html): The patient for the vaccination record\r\n* [List](list.html): If all resources have the same subject\r\n* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for\r\n* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for\r\n* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient\r\n* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.\r\n* [NutritionOrder](nutritionorder.html): The identity of the person who requires the diet, formula or nutritional supplement\r\n* [Observation](observation.html): The subject that the observation is about (if patient)\r\n* [Procedure](procedure.html): Search by subject - a patient\r\n* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?\r\n* [ServiceRequest](servicerequest.html): Search by subject - a patient\r\n* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied\r\n* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for\r\n"
           },
           {
+            "name": "recorder",
+            "in": "query",
+            "type": "string",
+            "description": "Who recorded the sensitivity"
+          },
+          {
+            "name": "route",
+            "in": "query",
+            "type": "string",
+            "description": "How the subject was exposed to the substance"
+          },
+          {
+            "name": "severity",
+            "in": "query",
+            "type": "string",
+            "description": "mild | moderate | severe (of event as a whole)"
+          },
+          {
             "name": "type",
             "in": "query",
             "type": "string",
-            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): allergy | intolerance - Underlying mechanism (if known)\r\n* [Composition](composition.html): Kind of composition (LOINC if possible)\r\n* [DocumentManifest](documentmanifest.html): Kind of document set\r\n* [DocumentReference](documentreference.html): Kind of document (LOINC if possible)\r\n* [Encounter](encounter.html): Specific type of encounter\r\n* [EpisodeOfCare](episodeofcare.html): Type/class  - e.g. specialist referral, disease management\r\n"
-          },
-          {
-            "name": "encounter",
-            "in": "query",
-            "type": "string",
-            "description": "Multiple Resources: \r\n\r\n* [Composition](composition.html): Context of the Composition\r\n* [DeviceRequest](devicerequest.html): Encounter during which request was created\r\n* [DiagnosticReport](diagnosticreport.html): The Encounter when the order was made\r\n* [DocumentReference](documentreference.html): Context of the document  content\r\n* [Flag](flag.html): Alert relevant during encounter\r\n* [List](list.html): Context in which list created\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this encounter identifier\r\n* [Observation](observation.html): Encounter related to the observation\r\n* [Procedure](procedure.html): Encounter created as part of\r\n* [RiskAssessment](riskassessment.html): Where was assessment performed?\r\n* [ServiceRequest](servicerequest.html): An encounter in which this request is made\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this encounter identifier\r\n"
-          },
-          {
-            "name": "authenticator",
-            "in": "query",
-            "type": "string",
-            "description": "Who/what authenticated the document"
-          },
-          {
-            "name": "author",
-            "in": "query",
-            "type": "string",
-            "description": "Who and/or what authored the document"
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "type": "string",
-            "description": "Categorization of document"
-          },
-          {
-            "name": "contenttype",
-            "in": "query",
-            "type": "string",
-            "description": "Mime type of the content, with charset etc."
-          },
-          {
-            "name": "custodian",
-            "in": "query",
-            "type": "string",
-            "description": "Organization which maintains the document"
-          },
-          {
-            "name": "date",
-            "in": "query",
-            "type": "string",
-            "description": "When this document reference was created"
-          },
-          {
-            "name": "description",
-            "in": "query",
-            "type": "string",
-            "description": "Human-readable description"
-          },
-          {
-            "name": "event",
-            "in": "query",
-            "type": "string",
-            "description": "Main clinical acts documented"
-          },
-          {
-            "name": "facility",
-            "in": "query",
-            "type": "string",
-            "description": "Kind of facility where patient was seen"
-          },
-          {
-            "name": "format",
-            "in": "query",
-            "type": "string",
-            "description": "Format/content rules for the document"
-          },
-          {
-            "name": "language",
-            "in": "query",
-            "type": "string",
-            "description": "Human language of the content (BCP-47)"
-          },
-          {
-            "name": "location",
-            "in": "query",
-            "type": "string",
-            "description": "Uri where the data can be found"
-          },
-          {
-            "name": "period",
-            "in": "query",
-            "type": "string",
-            "description": "Time of service that is being documented"
-          },
-          {
-            "name": "related",
-            "in": "query",
-            "type": "string",
-            "description": "Related identifiers or resources"
-          },
-          {
-            "name": "relatesto",
-            "in": "query",
-            "type": "string",
-            "description": "Target of the relationship"
-          },
-          {
-            "name": "relation",
-            "in": "query",
-            "type": "string",
-            "description": "replaces | transforms | signs | appends"
-          },
-          {
-            "name": "security-label",
-            "in": "query",
-            "type": "string",
-            "description": "Document security-tags"
-          },
-          {
-            "name": "setting",
-            "in": "query",
-            "type": "string",
-            "description": "Additional details about where the content was created (e.g. clinical specialty)"
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "type": "string",
-            "description": "current | superseded | entered-in-error",
+            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): allergy | intolerance - Underlying mechanism (if known)\r\n* [Composition](composition.html): Kind of composition (LOINC if possible)\r\n* [DocumentManifest](documentmanifest.html): Kind of document set\r\n* [DocumentReference](documentreference.html): Kind of document (LOINC if possible)\r\n* [Encounter](encounter.html): Specific type of encounter\r\n* [EpisodeOfCare](episodeofcare.html): Type/class  - e.g. specialist referral, disease management\r\n",
             "enum": [
-              "current",
-              "superseded",
-              "entered-in-error"
+              "allergy",
+              "intolerance"
             ]
           },
           {
-            "name": "subject",
+            "name": "verification-status",
             "in": "query",
             "type": "string",
-            "description": "Who/what is the subject of the document"
-          },
-          {
-            "name": "relationship",
-            "in": "query",
-            "type": "string",
-            "description": "Combination of relation and relatesTo"
+            "description": "unconfirmed | confirmed | refuted | entered-in-error"
           }
         ],
         "responses": {
@@ -1092,7 +1089,7 @@
         }
       }
     },
-    "/DocumentReference/{id}": {
+    "/AllergyIntolerance/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -1103,16 +1100,16 @@
       ],
       "get": {
         "tags": [
-          "DocumentReference"
+          "AllergyIntolerance"
         ],
-        "summary": "Retrieve DocumentReference by ID",
-        "description": "Retrieve DocumentReference by providing ID",
+        "summary": "Retrieve AllergyIntolerance by ID",
+        "description": "Retrieve AllergyIntolerance by providing ID",
         "parameters": [],
         "responses": {
           "200": {
             "description": "Success",
             "schema": {
-              "$ref": "#/definitions/DocumentReference"
+              "$ref": "#/definitions/AllergyIntolerance"
             }
           },
           "400": {

@@ -125,6 +125,8 @@ export default class Topbar extends React.Component {
     let control = []
     let formOnSubmit = null
 
+    control.push(<a target="_blank" href="https://atdevportalidm.mphrx.com/idm/#/registerUser">SignUp</a>)
+
     if(urls) {
       let rows = []
       urls.forEach((link, i) => {
@@ -148,22 +150,26 @@ export default class Topbar extends React.Component {
         <select id="select" disabled={isLoading} onChange={ this.onUrlSelect }>
           <option value="./examples/Patient.json">Patient</option>
           <option value="./examples/Practitioner.json">Practitioner</option>
-          <option value="./examples/Encounter.json">Encounter</option>
-          <option value="./examples/observation.json">Observation</option>
-          <option value="./examples/DiagnosticReport.json">Diagnostic Report</option>
           <option value="./examples/Account.json">Account</option>
+          <option value="./examples/AllergyIntolerance.json">Allergy Intolerance</option>
+          <option value="./examples/Appointment.json">Appointment</option>
+          <option value="./examples/CarePlan.json">Care Plan</option>
           <option value="./examples/CareTeam.json">Care Team</option>
           <option value="./examples/ClinicalImpression.json">Clinical Impression</option>
           <option value="./examples/Condition.json">Condition</option>
           <option value="./examples/Coverage.json">Coverage</option>
           <option value="./examples/Device.json">Device</option>
-          <option value="./examples/DiagnosticOrder.json">Diagnostic Order</option>
+          {/*<option value="./examples/DiagnosticOrder.json">Diagnostic Order</option>   fhir-to-swagger repo don't have DiagnosticOrder*/}
+          <option value="./examples/DiagnosticReport.json">Diagnostic Report</option>
           <option value="./examples/DocumentReference.json">Document Reference</option>
+          <option value="./examples/Encounter.json">Encounter</option>
           <option value="./examples/FamilyMemberHistory.json">Family Member History</option>
           <option value="./examples/Goal.json">Goal</option>
           <option value="./examples/Immunization.json">Immunization</option>
           <option value="./examples/Location.json">Location</option>
           <option value="./examples/Medication.json">Medication</option>
+          <option value="./examples/MedicationRequest.json">Medication Request</option>
+          <option value="./examples/Observation.json">Observation</option>
           <option value="./examples/Organization.json">Organization</option>
           <option value="./examples/PractitionerRole.json">Practitioner Role</option>
           <option value="./examples/Procedure.json">Procedure</option>
@@ -174,7 +180,6 @@ export default class Topbar extends React.Component {
         </>
 
       )
-      control.push(<Button className="download-url-button" onClick={ this.downloadUrl }>Explore</Button>)
     }
 
     return (

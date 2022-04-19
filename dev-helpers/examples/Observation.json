@@ -1297,7 +1297,7 @@
       "description": "A time during the day, with no date specified"
     }
   },
-  "host": "webqa1.mphrx.com",
+  "host": "atdevportal.mphrx.com",
   "basePath": "/minerva/fhir/r4",
   "info": {
     "title": "ObservationFHIRAPI",

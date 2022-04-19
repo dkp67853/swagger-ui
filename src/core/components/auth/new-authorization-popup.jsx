@@ -73,7 +73,7 @@ export default class NewAuthorizationPopup extends React.Component {
     }
     formBody = formBody.join("&");
 
-    return fetch("http://localhost:8080/minerva/fhir/oauth2/token", {
+    return fetch("https://atdevportal.mphrx.com/minerva/fhir/oauth2/token", {
       "method": "POST",
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

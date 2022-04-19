@@ -1,11 +1,11 @@
 {
   "swagger": "2.0",
   "definitions": {
-    "DocumentReference": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "Appointment": {
+      "description": "A booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. This may result in one or more Encounter(s).",
       "properties": {
         "resourceType": {
-          "description": "This is a DocumentReference resource",
+          "description": "This is a Appointment resource",
           "type": "string"
         },
         "id": {
@@ -28,96 +28,142 @@
           "description": "A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.",
           "$ref": "#/definitions/Narrative"
         },
-        "masterIdentifier": {
-          "description": "Document identifier as assigned by the source of the document. This identifier is specific to this version of the document. This unique identifier may be used elsewhere to identify this version of the document.",
-          "$ref": "#/definitions/Identifier"
-        },
         "identifier": {
-          "description": "Other identifiers associated with the document, including version independent identifiers.",
+          "description": "This records identifiers associated with this appointment concern that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).",
           "items": {
             "$ref": "#/definitions/Identifier"
           },
           "type": "array"
         },
         "status": {
-          "description": "The status of this document reference.",
+          "description": "The overall status of the Appointment. Each of the participants has their own participation status which indicates their involvement in the process, however this status indicates the shared status.",
           "enum": [
-            "current",
-            "superseded",
-            "entered-in-error"
+            "proposed",
+            "pending",
+            "booked",
+            "arrived",
+            "fulfilled",
+            "cancelled",
+            "noshow",
+            "entered-in-error",
+            "checked-in",
+            "waitlist"
           ]
         },
-        "docStatus": {
-          "description": "The status of the underlying document.",
-          "$ref": "#/definitions/code"
-        },
-        "type": {
-          "description": "Specifies the particular kind of document referenced  (e.g. History and Physical, Discharge Summary, Progress Note). This usually equates to the purpose of making the document referenced.",
+        "cancelationReason": {
+          "description": "The coded reason for the appointment being cancelled. This is often used in reporting/billing/futher processing to determine if further actions are required, or specific fees apply.",
           "$ref": "#/definitions/CodeableConcept"
         },
-        "category": {
-          "description": "A categorization for the type of document referenced - helps for indexing and searching. This may be implied by or derived from the code specified in the DocumentReference.type.",
+        "serviceCategory": {
+          "description": "A broad categorization of the service that is to be performed during this appointment.",
           "items": {
             "$ref": "#/definitions/CodeableConcept"
           },
           "type": "array"
         },
-        "subject": {
-          "description": "Who or what the document is about. The document can be about a person, (patient or healthcare practitioner), a device (e.g. a machine) or even a group of subjects (such as a document about a herd of farm animals, or a set of patients that share a common exposure).",
-          "$ref": "#/definitions/Reference"
+        "serviceType": {
+          "description": "The specific service that is to be performed during this appointment.",
+          "items": {
+            "$ref": "#/definitions/CodeableConcept"
+          },
+          "type": "array"
         },
-        "date": {
-          "description": "When the document reference was created.",
-          "$ref": "#/definitions/instant"
+        "specialty": {
+          "description": "The specialty of a practitioner that would be required to perform the service requested in this appointment.",
+          "items": {
+            "$ref": "#/definitions/CodeableConcept"
+          },
+          "type": "array"
         },
-        "author": {
-          "description": "Identifies who is responsible for adding the information to the document.",
+        "appointmentType": {
+          "description": "The style of appointment or patient that has been booked in the slot (not service type).",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "reasonCode": {
+          "description": "The coded reason that this appointment is being scheduled. This is more clinical than administrative.",
+          "items": {
+            "$ref": "#/definitions/CodeableConcept"
+          },
+          "type": "array"
+        },
+        "reasonReference": {
+          "description": "Reason the appointment has been scheduled to take place, as specified using information from another resource. When the patient arrives and the encounter begins it may be used as the admission diagnosis. The indication will typically be a Condition (with other resources referenced in the evidence.detail), or a Procedure.",
           "items": {
             "$ref": "#/definitions/Reference"
           },
           "type": "array"
         },
-        "authenticator": {
-          "description": "Which person or organization authenticates that this document is valid.",
-          "$ref": "#/definitions/Reference"
-        },
-        "custodian": {
-          "description": "Identifies the organization or group who is responsible for ongoing maintenance of and access to the document.",
-          "$ref": "#/definitions/Reference"
-        },
-        "relatesTo": {
-          "description": "Relationships that this document has with other document references that already exist.",
-          "items": {
-            "$ref": "#/definitions/DocumentReference_RelatesTo"
-          },
-          "type": "array"
+        "priority": {
+          "description": "The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).",
+          "$ref": "#/definitions/unsignedInt"
         },
         "description": {
-          "description": "Human-readable description of the source document.",
+          "description": "The brief description of the appointment as would be shown on a subject line in a meeting request, or appointment list. Detailed or expanded information should be put in the comment field.",
           "$ref": "#/definitions/string"
         },
-        "securityLabel": {
-          "description": "A set of Security-Tag codes specifying the level of privacy/security of the Document. Note that DocumentReference.meta.security contains the security labels of the \"reference\" to the document, while DocumentReference.securityLabel contains a snapshot of the security labels on the document the reference refers to.",
+        "supportingInformation": {
+          "description": "Additional information to support the appointment provided when making the appointment.",
           "items": {
-            "$ref": "#/definitions/CodeableConcept"
+            "$ref": "#/definitions/Reference"
           },
           "type": "array"
         },
-        "content": {
-          "description": "The document and format referenced. There may be multiple content element repetitions, each with a different format.",
+        "start": {
+          "description": "Date/Time that the appointment is to take place.",
+          "$ref": "#/definitions/instant"
+        },
+        "end": {
+          "description": "Date/Time that the appointment is to conclude.",
+          "$ref": "#/definitions/instant"
+        },
+        "minutesDuration": {
+          "description": "Number of minutes that the appointment is to take. This can be less than the duration between the start and end times.  For example, where the actual time of appointment is only an estimate or if a 30 minute appointment is being requested, but any time would work.  Also, if there is, for example, a planned 15 minute break in the middle of a long appointment, the duration may be 15 minutes less than the difference between the start and end.",
+          "$ref": "#/definitions/positiveInt"
+        },
+        "slot": {
+          "description": "The slots from the participants' schedules that will be filled by the appointment.",
           "items": {
-            "$ref": "#/definitions/DocumentReference_Content"
+            "$ref": "#/definitions/Reference"
           },
           "type": "array"
         },
-        "context": {
-          "description": "The clinical context in which the document was prepared.",
-          "$ref": "#/definitions/DocumentReference_Context"
+        "created": {
+          "description": "The date that this appointment was initially created. This could be different to the meta.lastModified value on the initial entry, as this could have been before the resource was created on the FHIR server, and should remain unchanged over the lifespan of the appointment.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "comment": {
+          "description": "Additional comments about the appointment.",
+          "$ref": "#/definitions/string"
+        },
+        "patientInstruction": {
+          "description": "While Appointment.comment contains information for internal use, Appointment.patientInstructions is used to capture patient facing information about the Appointment (e.g. please bring your referral or fast from 8pm night before).",
+          "$ref": "#/definitions/string"
+        },
+        "basedOn": {
+          "description": "The service request this appointment is allocated to assess (e.g. incoming referral or procedure request).",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          },
+          "type": "array"
+        },
+        "participant": {
+          "description": "List of participants involved in the appointment.",
+          "items": {
+            "$ref": "#/definitions/Appointment_Participant"
+          },
+          "type": "array"
+        },
+        "requestedPeriod": {
+          "description": "A set of date ranges (potentially including times) that the appointment is preferred to be scheduled within.\n\nThe duration (usually in minutes) could also be provided to indicate the length of the appointment to fill and populate the start/end times for the actual allocated time. However, in other situations the duration may be calculated by the scheduling system.",
+          "items": {
+            "$ref": "#/definitions/Period"
+          },
+          "type": "array"
         }
       },
       "additionalProperties": false,
       "required": [
-        "content",
+        "participant",
         "resourceType"
       ]
     },
@@ -289,104 +335,82 @@
       },
       "additionalProperties": false
     },
-    "instant": {
-      "type": "string",
-      "description": "An instant in time - known at least to the second"
-    },
-    "DocumentReference_RelatesTo": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
-      "properties": {
-        "id": {
-          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
-          "$ref": "#/definitions/string"
-        },
-        "code": {
-          "description": "The type of relationship that this document has with anther document.",
-          "enum": [
-            "replaces",
-            "transforms",
-            "signs",
-            "appends"
-          ]
-        },
-        "target": {
-          "description": "The target document of this relationship.",
-          "$ref": "#/definitions/Reference"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "target"
-      ]
+    "unsignedInt": {
+      "type": "number",
+      "description": "An integer with a value that is not negative (e.g. >= 0)"
     },
     "string": {
       "type": "string",
       "description": "A sequence of Unicode characters"
     },
-    "DocumentReference_Content": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
-      "properties": {
-        "id": {
-          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
-          "$ref": "#/definitions/string"
-        },
-        "attachment": {
-          "description": "The document or URL of the document along with critical metadata to prove content has integrity.",
-          "$ref": "#/definitions/Attachment"
-        },
-        "format": {
-          "description": "An identifier of the document encoding, structure, and template that the document conforms to beyond the base format indicated in the mimeType.",
-          "$ref": "#/definitions/Coding"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "attachment"
-      ]
+    "instant": {
+      "type": "string",
+      "description": "An instant in time - known at least to the second"
     },
-    "DocumentReference_Context": {
-      "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text.",
+    "positiveInt": {
+      "type": "number",
+      "description": "An integer with a value that is positive (e.g. >0)"
+    },
+    "dateTime": {
+      "type": "string",
+      "description": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+    },
+    "Appointment_Participant": {
+      "description": "A booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. This may result in one or more Encounter(s).",
       "properties": {
         "id": {
           "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
           "$ref": "#/definitions/string"
         },
-        "encounter": {
-          "description": "Describes the clinical encounter or type of care that the document content is associated with.",
-          "items": {
-            "$ref": "#/definitions/Reference"
-          },
-          "type": "array"
-        },
-        "event": {
-          "description": "This list of codes represents the main clinical acts, such as a colonoscopy or an appendectomy, being documented. In some cases, the event is inherent in the type Code, such as a \"History and Physical Report\" in which the procedure being documented is necessarily a \"History and Physical\" act.",
+        "type": {
+          "description": "Role of participant in the appointment.",
           "items": {
             "$ref": "#/definitions/CodeableConcept"
           },
           "type": "array"
         },
-        "period": {
-          "description": "The time period over which the service that is described by the document was provided.",
-          "$ref": "#/definitions/Period"
-        },
-        "facilityType": {
-          "description": "The kind of facility where the patient was seen.",
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "practiceSetting": {
-          "description": "This property may convey specifics about the practice setting where the content was created, often reflecting the clinical specialty.",
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "sourcePatientInfo": {
-          "description": "The Patient Information as known when the document was published. May be a reference to a version specific, or contained.",
+        "actor": {
+          "description": "A Person, Location/HealthcareService or Device that is participating in the appointment.",
           "$ref": "#/definitions/Reference"
         },
-        "related": {
-          "description": "Related identifiers or resources associated with the DocumentReference.",
-          "items": {
-            "$ref": "#/definitions/Reference"
-          },
-          "type": "array"
+        "required": {
+          "description": "Whether this participant is required to be present at the meeting. This covers a use-case where two doctors need to meet to discuss the results for a specific patient, and the patient is not required to be present.",
+          "enum": [
+            "required",
+            "optional",
+            "information-only"
+          ]
+        },
+        "status": {
+          "description": "Participation status of the actor.",
+          "enum": [
+            "accepted",
+            "declined",
+            "tentative",
+            "needs-action"
+          ]
+        },
+        "period": {
+          "description": "Participation period of the actor.",
+          "$ref": "#/definitions/Period"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Period": {
+      "description": "A time period defined by a start and end date and optionally time.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+          "$ref": "#/definitions/string"
+        },
+        "start": {
+          "description": "The start of the period. The boundary is inclusive.",
+          "$ref": "#/definitions/dateTime"
+        },
+        "end": {
+          "description": "The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.",
+          "$ref": "#/definitions/dateTime"
         }
       },
       "additionalProperties": false
@@ -688,10 +712,6 @@
         "resourceType"
       ]
     },
-    "unsignedInt": {
-      "type": "number",
-      "description": "An integer with a value that is not negative (e.g. >= 0)"
-    },
     "Resource": {
       "properties": {
         "resourceType": {
@@ -802,266 +822,134 @@
       "description": "xhtml - escaped html (see specfication)",
       "type": "string"
     },
-    "Period": {
-      "description": "A time period defined by a start and end date and optionally time.",
-      "properties": {
-        "id": {
-          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
-          "$ref": "#/definitions/string"
-        },
-        "start": {
-          "description": "The start of the period. The boundary is inclusive.",
-          "$ref": "#/definitions/dateTime"
-        },
-        "end": {
-          "description": "The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.",
-          "$ref": "#/definitions/dateTime"
-        }
-      },
-      "additionalProperties": false
-    },
-    "Attachment": {
-      "description": "For referring to data content defined in other formats.",
-      "properties": {
-        "id": {
-          "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
-          "$ref": "#/definitions/string"
-        },
-        "contentType": {
-          "description": "Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.",
-          "$ref": "#/definitions/code"
-        },
-        "language": {
-          "description": "The human language of the content. The value can be any valid value according to BCP 47.",
-          "$ref": "#/definitions/code"
-        },
-        "data": {
-          "description": "The actual data of the attachment - a sequence of bytes, base64 encoded.",
-          "$ref": "#/definitions/base64Binary"
-        },
-        "url": {
-          "description": "A location where the data can be accessed.",
-          "$ref": "#/definitions/url"
-        },
-        "size": {
-          "description": "The number of bytes of data that make up this attachment (before base64 encoding, if that is done).",
-          "$ref": "#/definitions/unsignedInt"
-        },
-        "hash": {
-          "description": "The calculated hash of the data using SHA-1. Represented using base64.",
-          "$ref": "#/definitions/base64Binary"
-        },
-        "title": {
-          "description": "A label or set of text to display in place of the data.",
-          "$ref": "#/definitions/string"
-        },
-        "creation": {
-          "description": "The date that the attachment was first created.",
-          "$ref": "#/definitions/dateTime"
-        }
-      },
-      "additionalProperties": false
-    },
     "boolean": {
+      "pattern": "^true|false$",
       "type": "boolean",
       "description": "Value of \"true\" or \"false\""
-    },
-    "dateTime": {
-      "type": "string",
-      "description": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-    },
-    "url": {
-      "type": "string",
-      "description": "A URI that is a literal reference"
     }
   },
   "host": "atdevportal.mphrx.com",
   "basePath": "/minerva/fhir/r4/",
   "info": {
-    "title": "DocumentReferenceFHIRAPI",
+    "title": "AppointmentFHIRAPI",
     "version": "4.0",
-    "description": "A reference to a document of any kind for any purpose. Provides metadata about the document so that the document can be discovered and managed. The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient specific documents like policy text."
+    "description": "A booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. This may result in one or more Encounter(s)."
   },
   "paths": {
-    "/DocumentReference": {
+    "/Appointment": {
       "get": {
         "tags": [
-          "DocumentReference"
+          "Appointment"
         ],
-        "summary": "Get DocumentReference",
+        "summary": "Get Appointment",
         "parameters": [
           {
-            "name": "_id",
+            "name": "actor",
             "in": "query",
             "type": "string",
-            "description": "Logical id of this artifact"
+            "description": "Any one of the individuals participating in the appointment"
           },
           {
-            "name": "_lastUpdated",
+            "name": "appointment-type",
             "in": "query",
             "type": "string",
-            "description": "When the resource version last changed"
-          },
-          {
-            "name": "_profile",
-            "in": "query",
-            "type": "string",
-            "description": "Profiles this resource claims to conform to"
-          },
-          {
-            "name": "identifier",
-            "in": "query",
-            "type": "string",
-            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): External ids for this item\r\n* [CarePlan](careplan.html): External Ids for this plan\r\n* [CareTeam](careteam.html): External Ids for this team\r\n* [Composition](composition.html): Version-independent identifier for the Composition\r\n* [Condition](condition.html): A unique identifier of the condition record\r\n* [Consent](consent.html): Identifier for this record (external references)\r\n* [DetectedIssue](detectedissue.html): Unique id for the detected issue\r\n* [DeviceRequest](devicerequest.html): Business identifier for request/order\r\n* [DiagnosticReport](diagnosticreport.html): An identifier for the report\r\n* [DocumentManifest](documentmanifest.html): Unique Identifier for the set of documents\r\n* [DocumentReference](documentreference.html): Master Version Specific Identifier\r\n* [Encounter](encounter.html): Identifier(s) by which this encounter is known\r\n* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier\r\n* [Goal](goal.html): External Ids for this goal\r\n* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID and Accession number\r\n* [Immunization](immunization.html): Business identifier\r\n* [List](list.html): Business identifier\r\n* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier\r\n* [MedicationStatement](medicationstatement.html): Return statements with this external identifier\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier\r\n* [Observation](observation.html): The unique id for a particular observation\r\n* [Procedure](procedure.html): A unique identifier for a procedure\r\n* [RiskAssessment](riskassessment.html): Unique identifier for the assessment\r\n* [ServiceRequest](servicerequest.html): Identifiers assigned to this order\r\n* [SupplyDelivery](supplydelivery.html): External identifier\r\n* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier\r\n"
-          },
-          {
-            "name": "patient",
-            "in": "query",
-            "type": "string",
-            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for\r\n* [CarePlan](careplan.html): Who the care plan is for\r\n* [CareTeam](careteam.html): Who care team is for\r\n* [ClinicalImpression](clinicalimpression.html): Patient or group assessed\r\n* [Composition](composition.html): Who and/or what the composition is about\r\n* [Condition](condition.html): Who has the condition?\r\n* [Consent](consent.html): Who the consent applies to\r\n* [DetectedIssue](detectedissue.html): Associated patient\r\n* [DeviceRequest](devicerequest.html): Individual the service is ordered for\r\n* [DeviceUseStatement](deviceusestatement.html): Search by subject - a patient\r\n* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient\r\n* [DocumentManifest](documentmanifest.html): The subject of the set of documents\r\n* [DocumentReference](documentreference.html): Who/what is the subject of the document\r\n* [Encounter](encounter.html): The patient or group present at the encounter\r\n* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care\r\n* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for\r\n* [Flag](flag.html): The identity of a subject to list flags for\r\n* [Goal](goal.html): Who this goal is intended for\r\n* [ImagingStudy](imagingstudy.html): Who the study is about\r\n* [Immunization](immunization.html): The patient for the vaccination record\r\n* [List](list.html): If all resources have the same subject\r\n* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for\r\n* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for\r\n* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient\r\n* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.\r\n* [NutritionOrder](nutritionorder.html): The identity of the person who requires the diet, formula or nutritional supplement\r\n* [Observation](observation.html): The subject that the observation is about (if patient)\r\n* [Procedure](procedure.html): Search by subject - a patient\r\n* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?\r\n* [ServiceRequest](servicerequest.html): Search by subject - a patient\r\n* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied\r\n* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for\r\n"
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "type": "string",
-            "description": "Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): allergy | intolerance - Underlying mechanism (if known)\r\n* [Composition](composition.html): Kind of composition (LOINC if possible)\r\n* [DocumentManifest](documentmanifest.html): Kind of document set\r\n* [DocumentReference](documentreference.html): Kind of document (LOINC if possible)\r\n* [Encounter](encounter.html): Specific type of encounter\r\n* [EpisodeOfCare](episodeofcare.html): Type/class  - e.g. specialist referral, disease management\r\n"
-          },
-          {
-            "name": "encounter",
-            "in": "query",
-            "type": "string",
-            "description": "Multiple Resources: \r\n\r\n* [Composition](composition.html): Context of the Composition\r\n* [DeviceRequest](devicerequest.html): Encounter during which request was created\r\n* [DiagnosticReport](diagnosticreport.html): The Encounter when the order was made\r\n* [DocumentReference](documentreference.html): Context of the document  content\r\n* [Flag](flag.html): Alert relevant during encounter\r\n* [List](list.html): Context in which list created\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this encounter identifier\r\n* [Observation](observation.html): Encounter related to the observation\r\n* [Procedure](procedure.html): Encounter created as part of\r\n* [RiskAssessment](riskassessment.html): Where was assessment performed?\r\n* [ServiceRequest](servicerequest.html): An encounter in which this request is made\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this encounter identifier\r\n"
-          },
-          {
-            "name": "authenticator",
-            "in": "query",
-            "type": "string",
-            "description": "Who/what authenticated the document"
-          },
-          {
-            "name": "author",
-            "in": "query",
-            "type": "string",
-            "description": "Who and/or what authored the document"
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "type": "string",
-            "description": "Categorization of document"
-          },
-          {
-            "name": "contenttype",
-            "in": "query",
-            "type": "string",
-            "description": "Mime type of the content, with charset etc."
-          },
-          {
-            "name": "custodian",
-            "in": "query",
-            "type": "string",
-            "description": "Organization which maintains the document"
+            "description": "The style of appointment or patient that has been booked in the slot (not service type)"
           },
           {
             "name": "date",
             "in": "query",
             "type": "string",
-            "description": "When this document reference was created"
+            "description": "Appointment date/time."
           },
           {
-            "name": "description",
+            "name": "identifier",
             "in": "query",
             "type": "string",
-            "description": "Human-readable description"
-          },
-          {
-            "name": "event",
-            "in": "query",
-            "type": "string",
-            "description": "Main clinical acts documented"
-          },
-          {
-            "name": "facility",
-            "in": "query",
-            "type": "string",
-            "description": "Kind of facility where patient was seen"
-          },
-          {
-            "name": "format",
-            "in": "query",
-            "type": "string",
-            "description": "Format/content rules for the document"
-          },
-          {
-            "name": "language",
-            "in": "query",
-            "type": "string",
-            "description": "Human language of the content (BCP-47)"
+            "description": "An Identifier of the Appointment"
           },
           {
             "name": "location",
             "in": "query",
             "type": "string",
-            "description": "Uri where the data can be found"
+            "description": "This location is listed in the participants of the appointment"
           },
           {
-            "name": "period",
+            "name": "part-status",
             "in": "query",
             "type": "string",
-            "description": "Time of service that is being documented"
+            "description": "The Participation status of the subject, or other participant on the appointment. Can be used to locate participants that have not responded to meeting requests."
           },
           {
-            "name": "related",
+            "name": "patient",
             "in": "query",
             "type": "string",
-            "description": "Related identifiers or resources"
+            "description": "One of the individuals of the appointment is this patient"
           },
           {
-            "name": "relatesto",
+            "name": "practitioner",
             "in": "query",
             "type": "string",
-            "description": "Target of the relationship"
+            "description": "One of the individuals of the appointment is this practitioner"
           },
           {
-            "name": "relation",
+            "name": "reason-code",
             "in": "query",
             "type": "string",
-            "description": "replaces | transforms | signs | appends"
+            "description": "Coded reason this appointment is scheduled"
           },
           {
-            "name": "security-label",
+            "name": "reason-reference",
             "in": "query",
             "type": "string",
-            "description": "Document security-tags"
+            "description": "Reason the appointment is to take place (resource)"
           },
           {
-            "name": "setting",
+            "name": "service-category",
             "in": "query",
             "type": "string",
-            "description": "Additional details about where the content was created (e.g. clinical specialty)"
+            "description": "A broad categorization of the service that is to be performed during this appointment"
+          },
+          {
+            "name": "service-type",
+            "in": "query",
+            "type": "string",
+            "description": "The specific service that is to be performed during this appointment"
+          },
+          {
+            "name": "slot",
+            "in": "query",
+            "type": "string",
+            "description": "The slots that this appointment is filling"
+          },
+          {
+            "name": "specialty",
+            "in": "query",
+            "type": "string",
+            "description": "The specialty of a practitioner that would be required to perform the service requested in this appointment"
           },
           {
             "name": "status",
             "in": "query",
             "type": "string",
-            "description": "current | superseded | entered-in-error",
+            "description": "The overall status of the appointment",
             "enum": [
-              "current",
-              "superseded",
-              "entered-in-error"
+              "proposed",
+              "pending",
+              "booked",
+              "arrived",
+              "fulfilled",
+              "cancelled",
+              "noshow",
+              "entered-in-error",
+              "checked-in",
+              "waitlist"
             ]
           },
           {
-            "name": "subject",
+            "name": "supporting-info",
             "in": "query",
             "type": "string",
-            "description": "Who/what is the subject of the document"
-          },
-          {
-            "name": "relationship",
-            "in": "query",
-            "type": "string",
-            "description": "Combination of relation and relatesTo"
+            "description": "Additional information to support the appointment"
           }
         ],
         "responses": {
@@ -1092,7 +980,7 @@
         }
       }
     },
-    "/DocumentReference/{id}": {
+    "/Appointment/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -1103,16 +991,16 @@
       ],
       "get": {
         "tags": [
-          "DocumentReference"
+          "Appointment"
         ],
-        "summary": "Retrieve DocumentReference by ID",
-        "description": "Retrieve DocumentReference by providing ID",
+        "summary": "Retrieve Appointment by ID",
+        "description": "Retrieve Appointment by providing ID",
         "parameters": [],
         "responses": {
           "200": {
             "description": "Success",
             "schema": {
-              "$ref": "#/definitions/DocumentReference"
+              "$ref": "#/definitions/Appointment"
             }
           },
           "400": {
@@ -1152,7 +1040,7 @@
   ],
   "securityDefinitions": {
     "Bearer": {
-      "name": "Authorization",
+      "name": "x-auth-token",
       "in": "header",
       "type": "apiKey",
       "description": "Authorization header using the Bearer scheme. Example :: 'Authorization: Bearer {token}'"
